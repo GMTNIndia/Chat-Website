@@ -65,18 +65,7 @@ document.addEventListener("DOMContentLoaded", function () {
         document.getElementById("agentSignIn").classList.remove("hidden");
       }
 
-      // Show appropriate sections based on user role
-      const userRole = localStorage.getItem("role");
-      if (userRole) {
-        if (userRole === "agent") {
-          document.getElementById("adminSection").classList.remove("hidden");
-          document.getElementById("roomSection").classList.remove("hidden");
-        } else if (userRole === "undefined") {
-          document.getElementById("roomSection").classList.remove("hidden");
-        }
-      } else {
-        document.getElementById("roomSection").classList.remove("hidden");
-      }
+      
 
       // Handle logout
       const logoutButton = document.getElementById("logout");
