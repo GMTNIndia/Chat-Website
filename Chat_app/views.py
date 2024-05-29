@@ -31,7 +31,9 @@ class AdminandAgentView(generics.CreateAPIView):
     queryset = AdminandAgent.objects.all()
     serializer_class = AdminandAgentSerializer
 # Prasanth Senthilvel changes end
-
+class AdminandAgentListView(generics.ListAPIView):
+    queryset = AdminandAgent.objects.all()
+    serializer_class = AdminandAgentSerializer
 
 class MessageListCreate(generics.ListCreateAPIView):
     queryset = Message.objects.all()

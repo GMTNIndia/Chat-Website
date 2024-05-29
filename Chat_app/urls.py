@@ -1,5 +1,5 @@
 from django.urls import path, include
-from .views import AdminandAgentView, AgentDetailUpdateView, AgentSearchAPIView, create_room
+from .views import AdminandAgentView, AgentDetailUpdateView, AgentSearchAPIView, create_room, AdminandAgentListView
 # from rest_framework.routers import DefaultRouter
 from . import views
 # from .views import MessageViewSet
@@ -15,4 +15,5 @@ urlpatterns = [
     path('add/', AdminandAgentView.as_view(), name='add-user'), # add Prasanth Senthilvel
     path('search/', AgentSearchAPIView.as_view(), name='agent_search'),
     path('agent/<int:pk>/edit/', AgentDetailUpdateView.as_view(), name='agent_edit'),
+    path('agents/', AdminandAgentListView.as_view(), name='list-users'),
 ]
