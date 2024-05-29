@@ -14,6 +14,6 @@ urlpatterns = [
     path('chat-admin/<str:uuid>/', views.room, name='room'),
     path('add/', AdminandAgentView.as_view(), name='add-user'), # add Prasanth Senthilvel
     path('search/', AgentSearchAPIView.as_view(), name='agent_search'),
-    path('agent/<int:pk>/edit/', AgentDetailUpdateView.as_view(), name='agent_edit'),
+    path('agent//edit/<int:pk>', AgentDetailUpdateView.as_view(), name='agent_edit'),
     path('agents/', AdminandAgentListView.as_view(), name='list-users'),
 ]
