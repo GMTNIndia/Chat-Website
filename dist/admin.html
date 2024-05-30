@@ -55,140 +55,25 @@
           </table>
         </div>
       </div>
-
       <!-- Rooms Section -->
       <div class="py-10 hidden" id="roomSection">
-        <h1 class="text-black font-semibold text-2xl md:text-4xl pb-4">Rooms</h1>
+        <h1 class="text-black font-semibold text-2xl md:text-4xl pb-4">
+          Rooms
+        </h1>
 
         <div
+          id="roomsContainer"
           class="grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4"
         >
-          <div class="bg-[#D8F2E4] p-4 rounded-lg">
-            <h2 class="text-2xl font-semibold mb-2 text-black">Chat</h2>
-            <div class="pb-2">
-              <div class="border-green-300 px-2">
-                <p><strong>ID:</strong> 3o6p0ljs56</p>
-                <p><strong>Name:</strong> Stein</p>
-                <p><strong>Status:</strong> Waiting</p>
-                <p><strong>Agent:</strong> None Yet...</p>
-              </div>
-              <div class="flex mt-4">
-                <a
-                  href="./chat.html"
-                  class="bg-[#285D46] text-white px-4 py-2 rounded-md mr-2"
-                >
-                  Join
-                </a>
-                <button class="bg-[#E3343F] text-white px-4 py-2 rounded-md">
-                  Delete
-                </button>
-              </div>
-            </div>
-          </div>
-
-          <!-- Duplicate the above div for each room, as needed -->
-          <div class="bg-[#D8F2E4] p-4 rounded-lg">
-            <h2 class="text-2xl font-semibold mb-2 text-black">Chat</h2>
-            <div class="pb-2">
-              <div class="border-green-300 px-2">
-                <p><strong>ID:</strong> 3o6p0ljs56</p>
-                <p><strong>Name:</strong> Stein</p>
-                <p><strong>Status:</strong> Waiting</p>
-                <p><strong>Agent:</strong> None Yet...</p>
-              </div>
-              <div class="flex mt-4">
-                <a
-                  href="./chat.html"
-                  class="bg-[#285D46] text-white px-4 py-2 rounded-md mr-2"
-                >
-                  Join
-                </a>
-                <button class="bg-[#E3343F] text-white px-4 py-2 rounded-md">
-                  Delete
-                </button>
-              </div>
-            </div>
-          </div>
-
-           <!-- Duplicate the above div for each room, as needed -->
-           <div class="bg-[#D8F2E4] p-4 rounded-lg">
-            <h2 class="text-2xl font-semibold mb-2 text-black">Chat</h2>
-            <div class="pb-2">
-              <div class="border-green-300 px-2">
-                <p><strong>ID:</strong> 3o6p0ljs56</p>
-                <p><strong>Name:</strong> Stein</p>
-                <p><strong>Status:</strong> Waiting</p>
-                <p><strong>Agent:</strong> None Yet...</p>
-              </div>
-              <div class="flex mt-4">
-                <a
-                  href="./chat.html"
-                  class="bg-[#285D46] text-white px-4 py-2 rounded-md mr-2"
-                >
-                  Join
-                </a>
-                <button class="bg-[#E3343F] text-white px-4 py-2 rounded-md">
-                  Delete
-                </button>
-              </div>
-            </div>
-          </div>
-
-           <!-- Duplicate the above div for each room, as needed -->
-           <div class="bg-[#D8F2E4] p-4 rounded-lg">
-            <h2 class="text-2xl font-semibold mb-2 text-black">Chat</h2>
-            <div class="pb-2">
-              <div class="border-green-300 px-2">
-                <p><strong>ID:</strong> 3o6p0ljs56</p>
-                <p><strong>Name:</strong> Stein</p>
-                <p><strong>Status:</strong> Waiting</p>
-                <p><strong>Agent:</strong> None Yet...</p>
-              </div>
-              <div class="flex mt-4">
-                <a
-                  href="./chat.html"
-                  class="bg-[#285D46] text-white px-4 py-2 rounded-md mr-2"
-                >
-                  Join
-                </a>
-                <button class="bg-[#E3343F] text-white px-4 py-2 rounded-md">
-                  Delete
-                </button>
-              </div>
-            </div>
-          </div>
-
-           <!-- Duplicate the above div for each room, as needed -->
-           <div class="bg-[#D8F2E4] p-4 rounded-lg">
-            <h2 class="text-2xl font-semibold mb-2 text-black">Chat</h2>
-            <div class="pb-2">
-              <div class="border-green-300 px-2">
-                <p><strong>ID:</strong> 3o6p0ljs56</p>
-                <p><strong>Name:</strong> Stein</p>
-                <p><strong>Status:</strong> Waiting</p>
-                <p><strong>Agent:</strong> None Yet...</p>
-              </div>
-              <div class="flex mt-4">
-                <a
-                  href="./chat.html"
-                  class="bg-[#285D46] text-white px-4 py-2 rounded-md mr-2"
-                >
-                  Join
-                </a>
-                <button class="bg-[#E3343F] text-white px-4 py-2 rounded-md">
-                  Delete
-                </button>
-              </div>
-            </div>
-          </div>
-
+          <!-- Rooms will be dynamically inserted here -->
         </div>
       </div>
     </main>
 
-    <!-- Inline JavaScript to load agent details -->
+   
     <script src="./scripts.js"></script>
     <script src="./agent.js"></script>
     <script src="./edit.js"></script>
+    <script src="./fetchRooms.js"></script>
   </body>
 </html>

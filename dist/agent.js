@@ -1,5 +1,4 @@
 document.addEventListener("DOMContentLoaded", function () {
-    // Show appropriate sections based on user role
     const userRole = localStorage.getItem("role");
     if (userRole) {
         if (userRole === "undefined") {
@@ -12,7 +11,6 @@ document.addEventListener("DOMContentLoaded", function () {
         document.getElementById("roomSection")?.classList.remove("hidden");
     }
 
-    // Function to display messages on the page
     function displayMessage(message, type) {
         const messageContainer = document.getElementById("messageContainer");
         if (messageContainer) {
