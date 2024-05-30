@@ -14,12 +14,13 @@
     <div class="pt-16 px-5">
       <div id="editAgentSection" class="text-left mt-10 px-2">
         <h1 class="text-[#000000] mb-4 font-semibold">Edit Agent</h1>
-        <form id="editAgentForm" class="space-y-4">
+        <form id="editAgentForm" class="space-y-4" data-agent-id="">
           <div>
             <label for="email" class="block text-[#000000]">Email</label>
             <input
               type="email"
               id="email"
+              name="email"
               class="w-full p-2 border-[3px] border-[#EAEAEA] rounded-xl font-normal"
               required
             />
@@ -31,41 +32,31 @@
             <input
               type="text"
               id="firstname"
+              name="firstname"
               class="w-full p-2 border-[3px] border-[#EAEAEA] rounded-xl font-normal"
               required
             />
           </div>
-
           <div>
             <label for="lastname" class="block text-[#000000]">Last Name</label>
             <input
               type="text"
               id="lastname"
+              name="lastname"
               class="w-full p-2 border-[3px] border-[#EAEAEA] rounded-xl font-normal"
               required
             />
           </div>
-          <!-- 
-            <div>
-            <label for="password" class="block text-[#000000]">Update Password</label>
-            <input
-              type="password"
-              id="password"
-              class="w-full p-2 border-[3px] border-[#EAEAEA] rounded-xl font-normal"
-              required
-            />
-          </div>
-          -->
-
           <div>
             <label for="role" class="block text-[#000000]">Role</label>
             <select
               id="role"
+              name="role"
               class="w-full p-2 border-[3px] border-[#EAEAEA] rounded-xl bg-gradient-to-l from-[#D8D8D8] to-[#EFEEEE]"
               required
             >
-              <option value="Manager">Manager</option>
-              <option value="Agent">Agent</option>
+              <option value="admin">Admin</option>
+              <option value="agent">Agent</option>
             </select>
           </div>
           <div>
@@ -95,7 +86,7 @@
         <p>Copyright &copy; 2024 - GMI Chat</p>
       </div>
     </footer>
-
     <script src="./scripts.js"></script>
+    <script src="./edit.js"></script>
   </body>
 </html>
