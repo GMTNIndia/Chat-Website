@@ -1,33 +1,32 @@
 from django.contrib import admin
-from .models import Message, Room, AdminandAgent
-
-
-@admin.register(Message)
-class MessageAdmin(admin.ModelAdmin):
-    list_display = ("sent_by", "body", "created_at")
-    search_fields = ("sent_by",)
-    list_filter = ("created_at",)
-    date_hierarchy = "created_at"
-
-
-@admin.register(Room)
-class RoomAdmin(admin.ModelAdmin):
-    list_display = ("uuid", "client", "status", "created_at")
-    search_fields = ("uuid", "client")
-    list_filter = ("status", "created_at")
-    date_hierarchy = "created_at"
-    filter_horizontal = (
-        "messages",
-    )  # Assuming you want a horizontal filter for messages
+from .models import AdminandAgent, ChatRoom, Message, Room, NewUser
 
 @admin.register(AdminandAgent)
 class AdminandAgentAdmin(admin.ModelAdmin):
-    list_display = ('first_name', 'last_name', 'email', 'role', 'password')
-    list_filter = ('role',)
+    list_display = ('email', 'first_name', 'last_name', 'role')
     search_fields = ('first_name', 'last_name', 'email')
-    ordering = ('last_name', 'first_name')
+    list_filter = ('role',)
 
-    def save_model(self, request, obj, form, change):
-        if change:  # If the record is being updated
-            obj.password = form.initial['password']  # Prevent password changes in the admin interface
-        super().save_model(request, obj, form, change)
+@admin.register(Message)
+class MessageAdmin(admin.ModelAdmin):
+    list_display = ('sender', 'receiver', 'content', 'timestamp')
+    search_fields = ('sender', 'receiver', 'content')
+    list_filter = ('sender', 'receiver', 'timestamp')
+
+@admin.register(Room)
+class RoomAdmin(admin.ModelAdmin):
+    list_display = ('id', 'room_id', 'user', 'status', 'agent', 'created_at')
+    search_fields = ('room_id', 'user', 'status', 'agent__name')
+    list_filter = ('status',)
+
+@admin.register(NewUser)
+class NewUserAdmin(admin.ModelAdmin):
+    list_display = ('id', 'user',)
+    search_fields = ('user',)
+
+
+@admin.register(ChatRoom)
+class ChatRoomAdmin(admin.ModelAdmin):
+    list_display = ('user', 'started', 'status', 'page', 'agent')
+    list_filter = ('status', 'agent')
+    search_fields = ('id', 'user', 'agent__username')

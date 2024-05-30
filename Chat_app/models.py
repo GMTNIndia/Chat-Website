@@ -28,18 +28,18 @@ class AdminandAgent(models.Model):
 
 
 class Message(models.Model):
-    body = models.TextField()
-    sent_by = models.CharField(max_length=255)
-    created_at = models.DateTimeField(auto_now_add=True)
-    created_by = models.ForeignKey(
-        User, blank=True, null=True, on_delete=models.SET_NULL
-    )
+    sender = models.CharField(max_length=100)
+    receiver = models.CharField(max_length=100)
+    content = models.TextField()
+    timestamp = models.DateTimeField(auto_now_add=True)
+    sender_type = models.CharField(max_length=50)  # Add this field
 
-    class Meta:
-        ordering = ("created_at",)
+
+class NewUser(models.Model):
+    user = models.CharField(max_length=100)
 
     def __str__(self):
-        return f"{self.sent_by}"
+        return self.user
 
 
 class Room(models.Model):
@@ -52,19 +52,31 @@ class Room(models.Model):
         (ACTIVE, "Active"),
         (CLOSED, "Closed"),
     )
-
-    uuid = models.CharField(max_length=255)
-    client = models.CharField(max_length=255)
-    agent = models.ForeignKey(
-        User, related_name="rooms", blank=True, null=True, on_delete=models.SET_NULL
-    )
-    messages = models.ManyToManyField(Message, blank=True)
+    room_id = models.CharField(max_length=10, unique=True)
+    user = models.CharField(max_length=50)
+    agent = models.CharField(max_length=50)
     url = models.CharField(max_length=255, blank=True, null=True)
     status = models.CharField(max_length=20, choices=CHOICES_STATUS, default=WAITING)
     created_at = models.DateTimeField(auto_now_add=True)
 
-    class Meta:
-        ordering = ("created_at",)
+    def __str__(self):
+        return self.room_id
+
+
+class ChatRoom(models.Model):
+    ACTIVE = "active"
+    CLOSED = "closed"
+
+    CHOICES_STATUS = (
+        (ACTIVE, "Active"),
+        (CLOSED, "Closed"),
+    )
+    id = models.CharField(max_length=10, primary_key=True)
+    user = models.CharField(max_length=100)
+    started = models.DateTimeField(auto_now_add=True)
+    status = models.CharField(max_length=20, choices=CHOICES_STATUS, default=ACTIVE)
+    page = models.URLField()
+    agent = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
 
     def __str__(self):
-        return f"{self.client} - {self.uuid}"
+        return self.user

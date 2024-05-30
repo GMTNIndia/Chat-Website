@@ -22,20 +22,18 @@ from rest_framework_simplejwt.views import (
     TokenRefreshView,
     TokenVerifyView,
 )
-from Chat_app.views import create_room
-from Chat_app import views
-from Chat_app.views import MessageListCreate, MessageDetail, RoomView
+from Chat_app.views import AgentMessageListView, ChatRoomDetailView, JoinChatRoomView, UserMessageListView
 
 
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("api/", include("Chat_app.urls")),
-    path("room/", RoomView.as_view(), name="room"),
-    path("create-room/<uuid:uuid>/", create_room, name="create_room"),
     path("api/token/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
     path("api/signin/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
     path("api/auth/token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
     path("api/auth/token/verify/", TokenVerifyView.as_view(), name="token_verify"),
-    path("messages/", MessageListCreate.as_view(), name="message-list-create"),
-    path("messages/<int:pk>/", MessageDetail.as_view(), name="message-detail"),
+    path("chatrooms/<str:room_id>/join/", JoinChatRoomView.as_view(), name="join-chat-room"),
+    path("chatrooms/<str:room_id>/", ChatRoomDetailView.as_view(), name="chat-room-detail"),
+    path('user-messages/', UserMessageListView.as_view(), name='user-message-list'),
+    path('agent-messages/', AgentMessageListView.as_view(), name='agent-message-list'),
 ]

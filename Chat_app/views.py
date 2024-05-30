@@ -1,58 +1,60 @@
-import json
-from django.http import JsonResponse
-from django.views.decorators.http import require_POST
+import shortuuid
 from rest_framework import viewsets
-from .serializers import AgentEditSerializer, MessageSerializer
+from .serializers import (
+    AdminandAgentSerializer,
+    AgentEditSerializer,
+    ChatRoomSerializer,
+    MessageSerializer,
+)
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status, generics
-from rest_framework.permissions import AllowAny, IsAuthenticated , IsAdminUser
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import authenticate
-from rest_framework.authtoken.models import Token
-from rest_framework.authentication import TokenAuthentication
-from rest_framework.decorators import (
-    api_view,
-    authentication_classes,
-    permission_classes,
-)
-from django.shortcuts import render, redirect
-from .models import Room, Message
+from django.shortcuts import render
+from .models import ChatRoom, NewUser, Room, Message
 from Chat_app_2.models import User
 from django.contrib.auth.decorators import login_required, user_passes_test
-from rest_framework import generics, permissions
+from rest_framework import generics
 from .models import AdminandAgent
-from .serializers import AdminandAgentSerializer
-
+from .serializers import NewUserSerializer, RoomSerializer
 
 
 # Prasanth Senthilvel changes start
 class AdminandAgentView(generics.CreateAPIView):
     queryset = AdminandAgent.objects.all()
     serializer_class = AdminandAgentSerializer
+
+
 # Prasanth Senthilvel changes end
 class AdminandAgentListView(generics.ListAPIView):
     queryset = AdminandAgent.objects.all()
     serializer_class = AdminandAgentSerializer
 
-class MessageListCreate(generics.ListCreateAPIView):
+
+class AgentDetailUpdateView(generics.RetrieveUpdateAPIView):
+    queryset = AdminandAgent.objects.all()
+    serializer_class = AgentEditSerializer
+    permission_classes = [IsAuthenticated]
+
+
+class MessageViewSet(viewsets.ModelViewSet):
     queryset = Message.objects.all()
     serializer_class = MessageSerializer
-    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        user = self.request.user  # Assuming authentication is implemented
+        return Message.objects.filter(receiver=user.email)
 
 
-class MessageDetail(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Message.objects.all()
+class UserMessageListView(generics.ListAPIView):
+    queryset = Message.objects.filter(sender_type='user')
     serializer_class = MessageSerializer
-    permission_classes = [permissions.IsAuthenticated]
 
-
-@require_POST
-def create_room(request, uuid):
-    name = request.POST.get("name", "")
-    url = request.POST.get("url", "")
-    Room.objects.create(uuid=uuid, client=name, url=url)
-    return JsonResponse({"message": "room created"})
+class AgentMessageListView(generics.ListAPIView):
+    queryset = Message.objects.filter(sender_type='agent')
+    serializer_class = MessageSerializer
 
 
 class TokenObtainPairView(APIView):
@@ -74,29 +76,6 @@ class TokenObtainPairView(APIView):
             return Response(
                 {"error": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED
             )
-
-
-# @login_required
-# def admin(request):
-#     rooms = Room.objects.all()
-#     users = User.objects.filter(is_staff=True)
-
-#     return render(request, 'chat/admin.html', {
-#         'rooms': rooms,
-#         'users': users
-#     })
-
-
-# @login_required
-# def room (request, uuid):
-#     room = Room.objects.get(uuid=uuid)
-#     if room.status == Room. WAITING:
-#         room.status = Room.ACTIVE
-#         room.agent = request.user
-#         room.save()
-#     return render(request, 'chat/room.html', {
-#     'room': room
-#     })
 
 
 # Check if the user is an admin
@@ -127,77 +106,76 @@ def agent(request):
     return render(request, "chat/agent.html", {"rooms": rooms, "users": users})
 
 
-@login_required
-def room(request, uuid):
-    room = Room.objects.get(uuid=uuid)
-
-    # Check if the current user belongs to the 'Agent' group
-    is_agent = request.user.groups.filter(name="agent").exists()
-
-    # Check if the 'Chat Admin' button should be disabled
-    chat_admin_disabled = False
-    if is_agent:
-        chat_admin_disabled = True
-
-    # Check if the room status is waiting and update it to active if necessary
-    if room.status == Room.WAITING:
-        room.status = Room.ACTIVE
-        room.agent = request.user
-        room.save()
-
-    # Render the room.html template with the appropriate context
-    return render(
-        request,
-        "chat/room.html",
-        {
-            "room": room,
-            "is_agent": is_agent,
-            "chat_admin_disabled": chat_admin_disabled,
-        },
-    )
-
-
-class RoomView(APIView):
-    permission_classes = [IsAuthenticated]
-
-    def post(self, request, *args, **kwargs):
-        # Check if the request contains the required data
-        if "client" not in request.data or "uuid" not in request.data:
-            return Response(
-                {"error": "Client and UUID are required fields"},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-
-        # Extract data from the request
-        client = request.data["client"]
-        uuid = request.data["uuid"]
-
-        # Example of additional validation
-        if not isinstance(client, str) or not isinstance(uuid, str):
-            return Response(
-                {"error": "Client and UUID must be strings"},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-
-        # Perform any additional logic here (e.g., save data to database, process data, etc.)
-
-        # Return a success response
-        return Response(
-            {"message": "Data received successfully"}, status=status.HTTP_200_OK
-        )
 class AgentSearchAPIView(APIView):
     permission_classes = [AllowAny]
 
     def get(self, request, *args, **kwargs):
-        query = request.GET.get('q', '')
+        query = request.GET.get("q", "")
         if query:
             agents = AdminandAgent.search(query)
             serializer = AdminandAgentSerializer(agents, many=True)
             return Response(serializer.data, status=status.HTTP_200_OK)
         else:
-            return Response({"error": "Query parameter 'q' is required."}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {"error": "Query parameter 'q' is required."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
-class AgentDetailUpdateView(generics.RetrieveUpdateAPIView):
-    queryset = AdminandAgent.objects.all()
-    serializer_class = AgentEditSerializer
-    permission_classes = [IsAdminUser]
+
+class NewUserViewSet(viewsets.ModelViewSet):
+    queryset = NewUser.objects.all()
+    serializer_class = NewUserSerializer
+    permission_classes = [AllowAny] 
+
+    def perform_create(self, serializer):
+        new_user = serializer.save()
+
+        # Automatically create a room when a new user is created
+        room_id = shortuuid.uuid()  # You can generate a unique room ID here
+        room_name = new_user.user  # Use the username as the room name
+        room_status = "waiting"  # Set the initial status of the room
+
+        # Assuming you want to associate the room with the newly created user
+        Room.objects.create(
+            room_id=room_id, user=room_name, status=room_status, agent="Not yet..."
+        )
+
+
+class RoomViewSet(viewsets.ModelViewSet):
+    queryset = Room.objects.all()
+    serializer_class = RoomSerializer
+
+
+class JoinChatRoomView(generics.UpdateAPIView):
+    queryset = ChatRoom.objects.all()
+    serializer_class = ChatRoomSerializer
+
+    def update(self, request, *args, **kwargs):
+        chat_room = self.get_object()
+        room_id = kwargs.get("pk")
+        Room = Room.objects.get(room_id=room_id)
+
+        # Perform any necessary checks before joining the room
+        # For example, you can check if the room status is 'waiting'
+
+        # Now, update the chat room's fields
+        chat_room.user = Room.user
+        chat_room.status = Room.status
+        chat_room.started = Room.started
+        chat_room.page = Room.page
+        chat_room.agent = Room.agent
+        chat_room.save()
+
+        serializer = self.get_serializer(chat_room)
+        return Response(serializer.data)
+
+
+class ChatRoomDetailView(generics.RetrieveAPIView):
+    queryset = ChatRoom.objects.all()
+    serializer_class = ChatRoomSerializer
+    permission_classes = [IsAuthenticated]
+
+
+class ChatRoomListView(generics.ListAPIView):
+    queryset = ChatRoom.objects.all()
+    serializer_class = ChatRoomSerializer
