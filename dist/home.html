@@ -55,8 +55,8 @@
           <div class="mb-4">
             <input
               type="text"
-              id="name"
-              name="name"
+              id="user"
+              name="user"
               class="bg-[#DFDFDF] mt-1 block w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none sm:text-sm font-semibold"
               required
               placeholder="Your name..."
@@ -108,129 +108,6 @@
 
     <!-- Include scripts -->
     <script src="./scripts.js"></script>
-    <script>
-      document.addEventListener("DOMContentLoaded", function () {
-        const chatBubble = document.getElementById("chat-bubble");
-        const popup = document.getElementById("popup");
-        const chatForm = document.getElementById("chat-form");
-        const chatWindow = document.getElementById("chat-window");
-        const messageForm = document.getElementById("message-form");
-        const messageInput = document.getElementById("message-input");
-        const messagesDiv = document.getElementById("messages");
-        let ws;
-
-        chatBubble.addEventListener("click", () => {
-          popup.classList.remove("hidden");
-        });
-
-        function createRoom(name) {
-          const roomDetails = {
-            name: name,
-            status: "Waiting",
-            agent: "None Yet...",
-          };
-
-          fetch("http://127.0.0.1:8000/create-room/", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(roomDetails),
-          })
-            .then((response) => {
-              if (!response.ok) {
-                throw new Error("Failed to create room");
-              }
-              return response.json();
-            })
-            .then((data) => {
-              console.log("Room created successfully:", data);
-              setupWebSocket(data.room_id);
-              chatWindow.classList.remove("hidden");
-              addMessage(
-                `Welcome to the chat, ${name}! wait for an agent to join...`,
-                "System"
-              );
-            })
-            .catch((error) => {
-              console.error("Error creating room:", error);
-            });
-        }
-
-        chatForm.addEventListener("submit", (event) => {
-          event.preventDefault();
-          const name = document.getElementById("name").value;
-          popup.classList.add("hidden");
-          createRoom(name);
-        });
-
-        function setupWebSocket(roomId) {
-          ws = new WebSocket(`ws://127.0.0.1:8000/ws/chat/${room_Id}/`);
-
-          ws.onmessage = function (event) {
-            const data = JSON.parse(event.data);
-            addMessage(`${data.sender}: ${data.message}`, data.sender);
-          };
-
-          ws.onclose = function (event) {
-            console.error("WebSocket closed unexpectedly");
-          };
-
-          messageForm.addEventListener("submit", (event) => {
-            event.preventDefault();
-            const message = messageInput.value;
-            if (message.trim() !== "") {
-              ws.send(
-                JSON.stringify({
-                  message: message,
-                  sender: "You",
-                })
-              );
-              messageInput.value = "";
-              addMessage(`You: ${message}`, "user");
-            }
-          });
-        }
-
-        function addMessage(message, sender = "user") {
-          const messageElement = document.createElement("div");
-          if (sender === "agent") {
-            messageElement.classList.add(
-              "p-2",
-              "mb-2",
-              "rounded",
-              "bg-[#DA314D]",
-              "text-[#FFFFFF]",
-              "self-start",
-              "max-w-xs"
-            );
-          } else if (sender === "user") {
-            messageElement.classList.add(
-              "p-2",
-              "mb-2",
-              "rounded",
-              "bg-[#E2E8F0]",
-              "text-[#2D2D2D]",
-              "self-end",
-              "max-w-xs"
-            );
-          } else {
-            messageElement.classList.add(
-              "p-2",
-              "mb-2",
-              "rounded",
-              "bg-[#F3F5F7]",
-              "text-[#2D2D2D]",
-              "self-center",
-              "max-w-xs",
-              "text-center"
-            );
-          }
-          messageElement.textContent = message;
-          messagesDiv.appendChild(messageElement);
-          messagesDiv.scrollTop = messagesDiv.scrollHeight;
-        }
-      });
-    </script>
+    <script src="./joinChat.js"></script>
   </body>
 </html>

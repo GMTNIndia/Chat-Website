@@ -1,13 +1,5 @@
 document.addEventListener("DOMContentLoaded", function () {
-  // Show appropriate sections based on user role
-  const userRole = localStorage.getItem("role");
-  if (userRole === "undefined") {
-    document.getElementById("adminSection")?.classList.remove("hidden");
-    document.getElementById("roomSection")?.classList.remove("hidden");
-  } else if (userRole === "agent") {
-    document.getElementById("roomSection")?.classList.remove("hidden");
-  }
-
+ 
   // Function to fetch and display the list of agents
   async function fetchAgents() {
     const token = localStorage.getItem("token");
