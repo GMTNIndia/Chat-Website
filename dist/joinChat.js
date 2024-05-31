@@ -29,7 +29,8 @@ document.addEventListener("DOMContentLoaded", function () {
       })
       .then((data) => {
         // Set up the WebSocket connection
-        setupWebSocket(data.room_name);
+        setupWebSocket(data.room_id);
+        popup.classList.add("hidden");
         chatWindow.classList.remove("hidden");
         addMessage(
           `Welcome to the chat, ${user}! Wait for an agent to join...`,
@@ -43,13 +44,12 @@ document.addEventListener("DOMContentLoaded", function () {
   chatForm.addEventListener("submit", (event) => {
     event.preventDefault();
     const user = document.getElementById("user").value;
-    popup.classList.add("hidden");
     createRoom(user);
   });
 
   // Function to set up the WebSocket connection
-  function setupWebSocket(room_name) {
-    ws = new WebSocket(`ws://127.0.0.1:8000/ws/chat/${room_name}/`);
+  function setupWebSocket(room_id) {
+    ws = new WebSocket(`ws://127.0.0.1:8000/ws/chat/${room_id}/`);
 
     ws.onmessage = function (event) {
       const data = JSON.parse(event.data);
