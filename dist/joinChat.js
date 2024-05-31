@@ -29,7 +29,7 @@ document.addEventListener("DOMContentLoaded", function () {
       })
       .then((data) => {
         // Set up the WebSocket connection
-        setupWebSocket(data.room_id);
+        setupWebSocket(data.room_name);
         chatWindow.classList.remove("hidden");
         addMessage(
           `Welcome to the chat, ${user}! Wait for an agent to join...`,
@@ -48,8 +48,8 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
   // Function to set up the WebSocket connection
-  function setupWebSocket(room_id) {
-    ws = new WebSocket(`ws://127.0.0.1:8000/ws/chat/${room_id}/`);
+  function setupWebSocket(room_name) {
+    ws = new WebSocket(`ws://127.0.0.1:8000/ws/chat/${room_name}/`);
 
     ws.onmessage = function (event) {
       const data = JSON.parse(event.data);
