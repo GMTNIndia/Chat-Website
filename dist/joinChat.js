@@ -100,45 +100,43 @@ document.addEventListener("DOMContentLoaded", function () {
       .catch((error) => console.error("Error storing message:", error));
   }
 
-  // Function to add messages to the chat window
-  function addMessage(message, sender = "user") {
-    const messageElement = document.createElement("div");
-    const avatarElement = document.createElement("div");
-    avatarElement.textContent = sender ? sender.charAt(0).toUpperCase() : "";
-    if (sender === "System") {
-      messageElement.classList.add(
-        "p-2",
-        "mb-2",
-        "rounded",
-        "bg-[#F3F5F7]",
-        "text-[#2D2D2D]",
-        "self-center",
-        "max-w-xs",
-        "text-center"
-      );
-    } else if (sender === user_name) {
-      messageElement.classList.add(
-        "p-2",
-        "mb-2",
-        "rounded",
-        "bg-[#E2E8F0]",
-        "text-[#2D2D2D]",
-        "self-end",
-        "max-w-xs"
-      );
-    } else {
-      messageElement.classList.add(
-        "p-2",
-        "mb-2",
-        "rounded",
-        "bg-gray-300",
-        "text-[#000000]",
-        "self-start",
-        "max-w-xs"
-      );
-    }
-    messageElement.textContent = message;
-    messagesDiv.appendChild(messageElement);
-    messagesDiv.scrollTop = messagesDiv.scrollHeight;
+ // Function to add messages to the chat window
+ function addMessage(message, sender = "user") {
+  const messageElement = document.createElement("div");
+  if (sender === "System") {
+    messageElement.classList.add(
+      "p-2",
+      "mb-2",
+      "rounded",
+      "bg-[#F3F5F7]",
+      "text-[#2D2D2D]",
+      "self-center",
+      "max-w-xs",
+      "text-center"
+    );
+  } else if (sender === user_name) {
+    messageElement.classList.add(
+      "p-2",
+      "mb-2",
+      "rounded",
+      "bg-gray-300",
+      "text-[#000000]",
+      "self-end",
+      "max-w-xs"
+    );
+  } else {
+    messageElement.classList.add(
+      "p-2",
+      "mb-2",
+      "rounded",
+      "bg-gray-300",
+      "text-[#000000]",
+      "self-start",
+      "max-w-xs"
+    );
   }
+  messageElement.textContent = message;
+  messagesDiv.appendChild(messageElement);
+  messagesDiv.scrollTop = messagesDiv.scrollHeight;
+}
 });
