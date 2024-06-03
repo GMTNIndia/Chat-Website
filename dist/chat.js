@@ -1,31 +1,27 @@
 document.addEventListener("DOMContentLoaded", function () {
   const urlParams = new URLSearchParams(window.location.search);
-  const userName = urlParams.get("userName") || "user";
-  const roomId = urlParams.get("room_id");
-  const chatMessages = document.getElementById("chatMessages");
+  const room_Id = urlParams.get("room_id");
   const messageInput = document.getElementById("messageInput");
-  const statusSelect = document.getElementById("status");
+  const chatMessages = document.getElementById("chatMessages");
   let ws;
+  const messageIds = new Set();
 
   function setupWebSocket() {
-    ws = new WebSocket(`ws://127.0.0.1:8000/ws/chat/${roomId}/`);
+    ws = new WebSocket(`ws://127.0.0.1:8000/ws/chat/${room_Id}/`);
 
     ws.addEventListener("message", (event) => {
       const data = JSON.parse(event.data);
-      addMessage(`${data.sender}: ${data.message}`, data.sender);
-      if (data.sender !== "system") {
-        storeMessage(data);
+      if (!messageIds.has(data.id)) {
+        addMessage(data.message, data.role, data.sender, data.id);
       }
     });
 
-    ws.addEventListener("error", (error) => {
-      console.error("WebSocket error:", error);
-    });
-
-    ws.addEventListener("close", () => {
-      console.error("WebSocket closed unexpectedly. Reconnecting...");
-    //  setTimeout(setupWebSocket, 1000); // Attempt to reconnect after 1 second
-    });
+    ws.addEventListener("error", (error) =>
+      console.error("WebSocket error:", error)
+    );
+    ws.addEventListener("close", () =>
+      console.error("WebSocket closed unexpectedly.")
+    );
 
     messageInput.addEventListener("keydown", (event) => {
       if (event.key === "Enter") {
@@ -34,132 +30,198 @@ document.addEventListener("DOMContentLoaded", function () {
       }
     });
 
-    messageInput.addEventListener("submit", (event) => {
-      event.preventDefault();
-      sendMessage();
-    });
+    document
+      .getElementById("sendButton")
+      .addEventListener("click", sendMessage);
+  }
 
-    statusSelect.addEventListener("change", () => {
-      const status = statusSelect.value;
-      if (status === "active") {
-        const statusMessage = {
-          message: "An agent has joined the chat",
-          sender: "system",
-        };
-        ws.send(JSON.stringify(statusMessage));
-        addMessage(`An agent has joined the chat`, "system");
-      }
-    });
+  function fetchRoomData() {
+    fetch(`http://127.0.0.1:8000/api/rooms/${room_Id}/`)
+      .then((response) => response.json())
+      .then((data) => {
+        document.getElementById("roomInfo").innerHTML = `
+          <div class='border-b-4'>
+            <p><strong>Room_Id:</strong> <span>${data.room_id}</span></p>
+            <p><strong>Name:</strong> <span>${data.user_name}</span></p>
+            <p><strong>Started:</strong> <span>${data.started}</span></p>
+            <p><strong>Status:</strong>
+              <select id="status">
+                <option value="waiting">Waiting</option>
+                <option value="active">Active</option>
+                <option value="closed">Closed</option>
+              </select>
+            </p>
+            <p><strong>Page:</strong> <a href="${data.page_url}">${data.page_url}</a></p>
+          </div>
+        `;
+
+        document
+          .getElementById("status")
+          .addEventListener("change", handleStatusChange);
+      })
+      .catch((error) => console.error("Error fetching room data:", error));
+  }
+
+  function handleStatusChange() {
+    const status = document.getElementById("status").value;
+    if (status === "active") {
+      const agentName = "Akash"; // Replace this with the actual agent's name
+      const statusMessage = {
+        message: "Agent has joined the chat",
+        role: "system",
+      };
+      ws.send(JSON.stringify(statusMessage));
+      addMessage("Agent has joined the chat");
+      document.querySelector("#roomInfo p:nth-child(5) span").textContent =
+        agentName;
+    }
   }
 
   function sendMessage() {
     const message = messageInput.value.trim();
     if (message) {
-      const messageData = { message: message, sender: userName };
-      ws.send(JSON.stringify(messageData));
-      addMessage(message, "user");
+      const userRole = localStorage.getItem("role") || "user";
+      const sender = "Akash"; // Replace this with the actual sender's name or ID
+      const messageId = generateMessageId();
+      const messageData = { message, role: userRole, sender, id: messageId };
+
+      try {
+        ws.send(JSON.stringify(messageData));
+        messageIds.add(messageId); // Track the message by its unique ID
+      } catch (error) {
+        console.error("WebSocket send error:", error);
+      }
+
+      addMessage(message, userRole, sender, messageId);
       storeMessage(messageData);
       messageInput.value = "";
     }
   }
 
-  function addMessage(message, sender = "user") {
-    const messageElement = document.createElement("div");
-    messageElement.classList.add(
-      "flex",
-      "items-end",
-      "space-x-2",
-      sender === "user" ? "justify-end" : "justify-start"
-    );
-
-    const avatarElement = document.createElement("div");
-    avatarElement.classList.add(
-      "flex-shrink-0",
-      "bg-[#D9D9D9]",
-      "rounded-full",
-      "h-8",
-      "w-8",
-      "flex",
-      "items-center",
-      "justify-center"
-    );
-    avatarElement.innerHTML = `<span class="text-[#000000] font-semibold">${sender
-      .charAt(0)
-      .toUpperCase()}</span>`;
-
-    if (sender !== "user" && sender !== "system") {
-      messageElement.appendChild(avatarElement);
-    }
-
+  function addMessage(message, role, sender, id) {
+    const messageContainer = document.createElement("div");
+    messageContainer.dataset.messageId = id; // Set a data attribute for the message ID
+  
     const messageContent = document.createElement("div");
-    messageContent.classList.add(
-      "p-2",
-      "rounded-t-none",
-      sender === "user" ? "rounded-l-lg" : "rounded-r-lg",
-      "rounded-b-lg",
-      "bg-[#D4D7D8]"
-    );
-    messageContent.innerHTML = `<p class="font-semibold">${message}</p>`;
-
-    messageElement.appendChild(messageContent);
-
-    if (sender === "user") {
-      messageElement.appendChild(avatarElement);
+    messageContent.textContent = message;
+  
+    const avatarElement = document.createElement("div");
+    avatarElement.textContent = sender ? sender.charAt(0).toUpperCase() : "";
+  
+    if (role === "system") {
+        messageContainer.classList.add("flex", "justify-center", "items-center");
+        messageContent.classList.add(
+            "max-w-md",
+            "bg-gray-200",
+            "py-2",
+            "px-4",
+            "rounded-lg",
+            "shadow-md",
+            "m-auto"
+        );
+        messageContainer.classList.add("text-green-600");
+        avatarElement.classList.add("hidden"); // Hide the avatar element for system messages
+    } else if (role === "agent") {
+        messageContainer.classList.add(
+            "flex",
+            "items-center",
+            "flex-row-reverse"
+        ); // Reverse the order for agent messages
+        messageContent.classList.add(
+            "max-w-md",
+            "bg-gray-300",
+            "py-1",
+            "px-4",
+            "rounded-lg",
+            "shadow-md",
+            "text-black",
+            "mr-2"
+        );
+        avatarElement.classList.add(
+            "bg-gray-300",
+            "h-8",
+            "w-8",
+            "flex",
+            "items-center",
+            "justify-center",
+            "rounded-full",
+            "text-sm",
+            "font-semibold",
+            "mr-2"
+        );
+        messageContainer.appendChild(avatarElement);
+        messageContainer.appendChild(messageContent);
+    } else {
+        messageContainer.classList.add("flex", "items-center");
+        avatarElement.classList.add(
+            "bg-gray-300",
+            "h-8",
+            "w-8",
+            "flex",
+            "items-center",
+            "justify-center",
+            "rounded-full",
+            "text-sm",
+            "font-semibold",
+            "mr-2"
+        );
+        messageContent.classList.add(
+            "max-w-md",
+            "bg-gray-300",
+            "py-1",
+            "px-4",
+            "rounded-lg",
+            "shadow-md",
+            "text-black",
+            "mr-2"
+        );
+        messageContainer.appendChild(avatarElement);
+        messageContainer.appendChild(messageContent);
     }
-
-    chatMessages.appendChild(messageElement);
+    
+    // Add margin-bottom to create a gap between messages
+    messageContainer.style.marginBottom = "10px";
+  
+    const chatMessages = document.getElementById("chatMessages"); // Ensure this matches your actual container ID
+    chatMessages.appendChild(messageContainer);
     chatMessages.scrollTop = chatMessages.scrollHeight;
-  }
+}
+
+  
+  
 
   function storeMessage(messageData) {
-    if (messageData.sender !== "system") {
-      fetch(`http://127.0.0.1:8000/messages/${roomId}/`, {
+    if (messageData.role !== "system") {
+      fetch(`http://127.0.0.1:8000/api/message/${room_Id}/`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(messageData),
-      }).catch((error) => {
-        console.error("Error storing message:", error);
-      });
+      }).catch((error) => console.error("Error storing message:", error));
     }
-  }
-
-  function fetchUserInfo() {
-    fetch(`http://127.0.0.1:8000/rooms/${roomId}/`)
-      .then((response) => response.json())
-      .then((data) => {
-        document.getElementById("userNameDisplay").innerText =
-          data.name || userName;
-        document.getElementById("startedTime").innerText =
-          data.started || "N/A";
-        document.getElementById("status").value = data.status || "waiting";
-        document.getElementById("pageUrl").innerText = data.page || "N/A";
-        document.getElementById("pageUrl").href = data.page || "#";
-        document.getElementById("agentName").innerText = data.agent || "N/A";
-      })
-      .catch((error) => {
-        console.error("Error fetching user info:", error);
-      });
   }
 
   function fetchMessages() {
-    fetch(`http://127.0.0.1:8000/messages/${roomId}/`)
+    fetch(`http://127.0.0.1:8000/api/messages/${room_Id}/`)
       .then((response) => response.json())
       .then((messages) => {
         messages.forEach((messageData) => {
           addMessage(
-            `${messageData.sender}: ${messageData.message}`,
-            messageData.sender
+            messageData.message,
+            messageData.role,
+            messageData.sender,
+            messageData.id
           );
+          messageIds.add(messageData.id); // Track the fetched messages by their unique IDs
         });
       })
-      .catch((error) => {
-        console.error("Error fetching messages:", error);
-      });
+      .catch((error) => console.error("Error fetching messages:", error));
   }
 
-  fetchUserInfo();
+  function generateMessageId() {
+    return "_" + Math.random().toString(36).substr(2, 9);
+  }
+
+  fetchRoomData();
   fetchMessages();
   setupWebSocket();
 });

@@ -78,7 +78,7 @@ document.addEventListener("DOMContentLoaded", function () {
         });
       } else {
         console.error("Logout button not found in the DOM");
-      }
+       }
     })
     .catch((error) => {
       console.error("Error loading header:", error);

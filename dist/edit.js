@@ -6,7 +6,7 @@ document.addEventListener("DOMContentLoaded", function () {
     try {
       const response = await fetch("http://127.0.0.1:8000/api/agents/", {
         headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: `${token}`,
         },
       });
 
@@ -20,10 +20,10 @@ document.addEventListener("DOMContentLoaded", function () {
           const row = document.createElement("tr");
           row.classList.add("odd:bg-white", "even:bg-gray-200");
           row.innerHTML = `
-              <td class="p-2">${agent.first_name} ${agent.last_name}</td>
-              <td class="p-2">${agent.email}</td>
-              <td class="p-2">${agent.role}</td>
-              <td class="p-2 hover:underline"><button class="editAgentBtn hover:underline" data-id="${agent.id}">Edit</button></td>
+              <td class="px-6 ">${agent.first_name} ${agent.last_name}</td>
+              <td class="px-6 ">${agent.email}</td>
+              <td class="px-6 ">${agent.role}</td>
+              <td class="px-6  hover:underline"><button class="editAgentBtn hover:underline" data-id="${agent.id}">Edit</button></td>
             `;
           tbody.appendChild(row);
         });
@@ -57,7 +57,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const token = localStorage.getItem("token");
     try {
       const response = await fetch(
-        `http://127.0.0.1:8000/api/agent/edit/${agentId}/`,
+        `http://127.0.0.1:8000/api/agent/${agentId}/`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -128,12 +128,12 @@ document.addEventListener("DOMContentLoaded", function () {
 
       try {
         const response = await fetch(
-          `http://127.0.0.1:8000/api/agent/edit/${agentId}/`,
+          `http://127.0.0.1:8000/api/agent/${agentId}/`,
           {
             method: "PUT",
             headers: {
               "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
+              Authorization: `${token}`,
             },
             body: JSON.stringify(data),
           }
