@@ -1,9 +1,8 @@
 document.addEventListener("DOMContentLoaded", function () {
     const userRole = localStorage.getItem("role");
     if (userRole) {
-        if (userRole === "undefined") {
+        if (userRole === "admin") {
             document.getElementById("adminSection")?.classList.remove("hidden");
-            document.getElementById("roomSection")?.classList.remove("hidden");
         } else if (userRole === "agent") {
             document.getElementById("roomSection")?.classList.remove("hidden");
         }
@@ -37,11 +36,11 @@ document.addEventListener("DOMContentLoaded", function () {
             const token = localStorage.getItem('token');
 
             try {
-                const response = await fetch('http://127.0.0.1:8000/api/add/', {
+                const response = await fetch('http://127.0.0.1:8000/api/register/', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}`,
+                        'Authorization': `${token}`,
                     },
                     body: JSON.stringify(data),
                 });
