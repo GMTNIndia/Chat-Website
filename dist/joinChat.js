@@ -62,7 +62,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     ws.onmessage = function (event) {
       const data = JSON.parse(event.data);
-      addMessage(`${data.sender}: ${data.message}`, data.sender);
+      addMessage(data.message, data.sender);
     };
 
     ws.onclose = function () {
@@ -100,43 +100,43 @@ document.addEventListener("DOMContentLoaded", function () {
       .catch((error) => console.error("Error storing message:", error));
   }
 
- // Function to add messages to the chat window
- function addMessage(message, sender = "user") {
-  const messageElement = document.createElement("div");
-  if (sender === "System") {
-    messageElement.classList.add(
-      "p-2",
-      "mb-2",
-      "rounded",
-      "bg-[#F3F5F7]",
-      "text-[#2D2D2D]",
-      "self-center",
-      "max-w-xs",
-      "text-center"
-    );
-  } else if (sender === user_name) {
-    messageElement.classList.add(
-      "p-2",
-      "mb-2",
-      "rounded",
-      "bg-gray-300",
-      "text-[#000000]",
-      "self-end",
-      "max-w-xs"
-    );
-  } else {
-    messageElement.classList.add(
-      "p-2",
-      "mb-2",
-      "rounded",
-      "bg-gray-300",
-      "text-[#000000]",
-      "self-start",
-      "max-w-xs"
-    );
+  // Function to add messages to the chat window
+  function addMessage(message, sender = "user") {
+    // Create the main message container
+    const messageContainer = document.createElement("div");
+    messageContainer.classList.add("flex", "items-start", "mb-2", "max-w-xs", "message-container");
+
+    // Create the avatar element
+    const avatarElement = document.createElement("div");
+    avatarElement.classList.add("flex-shrink-0", "w-8", "h-8", "rounded-full", "flex", "items-center", "justify-center", "bg-gray-500", "text-white", "font-bold");
+
+    // Get the first initial of the sender
+    const avatarInitial = document.createTextNode(sender.charAt(0).toUpperCase());
+    avatarElement.appendChild(avatarInitial);
+
+    // Create the message element
+    const messageElement = document.createElement("div");
+    messageElement.classList.add("p-2", "rounded", "bg-gray-300", "text-black");
+
+    if (sender === "System") {
+      messageElement.classList.add("bg-[#F3F5F7]", "text-[#2D2D2D]", "text-center");
+      messageContainer.classList.add("self-center");
+    } else if (sender === user_name) {
+      messageContainer.classList.add("self-end", "flex-row-reverse");
+      messageElement.classList.add("bg-gray-300", "text-black");
+    } else {
+      messageContainer.classList.add("self-start");
+    }
+
+    // Set the message text
+    messageElement.textContent = message;
+
+    // Append the avatar and message to the container
+    messageContainer.appendChild(avatarElement);
+    messageContainer.appendChild(messageElement);
+
+    // Append the container to the messages div
+    messagesDiv.appendChild(messageContainer);
+    messagesDiv.scrollTop = messagesDiv.scrollHeight;
   }
-  messageElement.textContent = message;
-  messagesDiv.appendChild(messageElement);
-  messagesDiv.scrollTop = messagesDiv.scrollHeight;
-}
 });

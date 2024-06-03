@@ -65,13 +65,13 @@ document.addEventListener("DOMContentLoaded", function () {
   function handleStatusChange() {
     const status = document.getElementById("status").value;
     if (status === "active") {
-      const agentName = "Akash"; // Replace this with the actual agent's name
+      const agentName = "Agent"; // Replace this with the actual agent's name
       const statusMessage = {
         message: "Agent has joined the chat",
         role: "system",
       };
       ws.send(JSON.stringify(statusMessage));
-      addMessage("Agent has joined the chat");
+      // addMessage("Agent has joined the chat");
       document.querySelector("#roomInfo p:nth-child(5) span").textContent =
         agentName;
     }
@@ -81,7 +81,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const message = messageInput.value.trim();
     if (message) {
       const userRole = localStorage.getItem("role") || "user";
-      const sender = "Akash"; // Replace this with the actual sender's name or ID
+      const sender = "Agent"; // Replace this with the actual sender's name or ID
       const messageId = generateMessageId();
       const messageData = { message, role: userRole, sender, id: messageId };
 
