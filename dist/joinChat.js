@@ -48,42 +48,40 @@ document.addEventListener("DOMContentLoaded", function () {
     createRoom(username);
   });
 
-// Inside setupWebSocket function
-function setupWebSocket(room_id) {
-  ws = new WebSocket(`ws://127.0.0.1:8000/ws/chat/${room_id}/`);
+  function setupWebSocket(room_id) {
+    ws = new WebSocket(`ws://127.0.0.1:8000/ws/chat/${room_id}/`);
 
-  ws.onopen = function () {
-    console.log("WebSocket connected");
-  };
+    ws.onopen = function () {
+      console.log("WebSocket connected");
+    };
 
-  ws.onmessage = function (event) {
-    const data = JSON.parse(event.data);
-    addMessage(data.message, data.sender);
-  };
+    ws.onmessage = function (event) {
+      const data = JSON.parse(event.data);
+      addMessage(data.message, data.sender);
+    };
 
-  ws.onerror = function (error) {
-    console.error("WebSocket error:", error);
-  };
+    ws.onerror = function (error) {
+      console.error("WebSocket error:", error);
+    };
 
-  ws.onclose = function () {
-    console.error("WebSocket closed unexpectedly. Reconnecting...");
-    setTimeout(function () {
-      setupWebSocket(room_id);
-    }, 1000);
-  };
-}
-
-// Outside setupWebSocket function
-messageForm.addEventListener("submit", (event) => {
-  event.preventDefault();
-  const message = messageInput.value;
-  if (message.trim() !== "") {
-    const messageData = { message: message, sender: user_name };
-    ws.send(JSON.stringify(messageData));
-    storeMessage(room_id, messageData);
-    messageInput.value = "";
+    ws.onclose = function () {
+      console.error("WebSocket closed unexpectedly. Reconnecting...");
+      setTimeout(function () {
+        setupWebSocket(room_id);
+      }, 1000);
+    };
   }
-});
+
+  messageForm.addEventListener("submit", (event) => {
+    event.preventDefault();
+    const message = messageInput.value;
+    if (message.trim() !== "") {
+      const messageData = { message: message, sender: user_name };
+      ws.send(JSON.stringify(messageData));
+      storeMessage(room_id, messageData);
+      messageInput.value = "";
+    }
+  });
 
   function storeMessage(roomId, messageData) {
     fetch(`http://127.0.0.1:8000/api/message/${roomId}/`, {
@@ -103,14 +101,13 @@ messageForm.addEventListener("submit", (event) => {
 
   function addMessage(message, sender) {
     const messageContainer = document.createElement("div");
-    messageContainer.classList.add("mb-2");
-
+    messageContainer.classList.add("mb-6"); // Increase margin-bottom for more space
    
     const messageContent = document.createElement("div");
     messageContent.textContent = message;
 
     const avatarElement = document.createElement("div");
-    avatarElement.textContent = sender.charAt(0).toUpperCase()
+    avatarElement.textContent = sender.charAt(0).toUpperCase();
 
     if (sender === "system") {
       messageContainer.classList.add("flex", "justify-center", "items-center");
@@ -125,7 +122,7 @@ messageForm.addEventListener("submit", (event) => {
       );
       messageContainer.classList.add("text-green-600");
       avatarElement.classList.add("hidden");
-  } else if (sender === user_name) {
+    } else if (sender === user_name) {
       messageContainer.classList.add(
           "flex",
           "items-center",
@@ -154,7 +151,7 @@ messageForm.addEventListener("submit", (event) => {
       );
       messageContainer.appendChild(avatarElement);
       messageContainer.appendChild(messageContent);
-  } else {
+    } else {
       messageContainer.classList.add("flex", "items-center");
       avatarElement.classList.add(
           "bg-gray-300",
@@ -180,7 +177,7 @@ messageForm.addEventListener("submit", (event) => {
       );
       messageContainer.appendChild(avatarElement);
       messageContainer.appendChild(messageContent);
-  }
+    }
     
     messagesDiv.appendChild(messageContainer);
     messagesDiv.scrollTop = messagesDiv.scrollHeight;
