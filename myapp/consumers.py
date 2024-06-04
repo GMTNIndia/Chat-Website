@@ -26,6 +26,8 @@ class ChatConsumer(AsyncWebsocketConsumer):
         text_data_json = json.loads(text_data)
         message = text_data_json['message']
         sender = text_data_json.get('sender', 'user')
+        role = text_data_json.get('role', 'user')
+        message_id = text_data_json.get('id', None)
 
         if sender == 'agent':
             try:
@@ -42,16 +44,22 @@ class ChatConsumer(AsyncWebsocketConsumer):
             {
                 'type': 'chat_message',
                 'message': message,
-                'sender': sender
+                'sender': sender,
+                'role': role,
+                'id': message_id
             }
         )
 
     async def chat_message(self, event):
         message = event['message']
         sender = event.get('sender', 'user')
+        role = event.get('role', 'user')
+        message_id = event.get('id', None)
 
         # Send message to WebSocket
         await self.send(text_data=json.dumps({
             'message': message,
-            'sender': sender
+            'sender': sender,
+            'role': role,
+            'id': message_id
         }))
