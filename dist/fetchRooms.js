@@ -48,7 +48,7 @@ document.addEventListener('DOMContentLoaded', () => {
               button.addEventListener('click', (event) => {
                 const room_Id = event.target.getAttribute('data-room-id');
                 const roomStatus = event.target.getAttribute('data-room-status');
-                const agentName = 'Manish'; // Replace with the actual agent name
+                const agentName = 'Agent';
 
                 fetch(`http://127.0.0.1:8000/api/rooms/${room_Id}/`, {
                   method: 'POST',
