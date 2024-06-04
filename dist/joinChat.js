@@ -14,7 +14,6 @@ document.addEventListener("DOMContentLoaded", function () {
     popup.classList.remove("hidden");
   });
 
-  // Function to create a new chat room for the user
   function createRoom(username) {
     user_name = username;
     const userDetails = { user_name: username };
@@ -41,7 +40,6 @@ document.addEventListener("DOMContentLoaded", function () {
       .catch((error) => console.error("Error creating room:", error));
   }
 
-  // Handle the submission of the chat form
   chatForm.addEventListener("submit", (event) => {
     event.preventDefault();
     const username = document.getElementById("user").value;
@@ -101,7 +99,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   function addMessage(message, sender) {
     const messageContainer = document.createElement("div");
-    messageContainer.classList.add("mb-6"); // Increase margin-bottom for more space
+    messageContainer.classList.add("mb-4"); 
    
     const messageContent = document.createElement("div");
     messageContent.textContent = message;
