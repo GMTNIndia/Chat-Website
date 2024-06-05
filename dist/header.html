@@ -5,6 +5,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="../src/output.css" />
     <title>Header</title>
+    <style>
+      @keyframes moveRight {
+        50% {
+          transform: translateX(0.5cm);
+        }
+      }
+
+      .moving-text {
+        display: inline-block;
+        animation: moveRight 3s infinite;
+      }
+    </style>
   </head>
   <body>
     <!-- Header -->
@@ -12,7 +24,9 @@
       <header
         class="bg-[#DA314D] p-4 flex justify-between items-center rounded"
       >
-        <div class="text-2xl font-semibold text-[#FFFFFF]">GMI Chat</div>
+        <div class="text-2xl font-semibold text-[#FFFFFF] moving-text">
+          GMI Chat
+        </div>
 
         <button id="toggleNavBtn" class="block sm:hidden">
           <svg
@@ -36,7 +50,9 @@
           class="hidden flex-col space-y-4 sm:flex sm:flex-row sm:space-y-0 sm:space-x-4"
         >
           <a href="./home.html" class="text-white hidden" id="homeLink">Home</a>
-          <a href="./about.html" class="text-white hidden" id="aboutLink">About</a>
+          <a href="./about.html" class="text-white hidden" id="aboutLink"
+            >About</a
+          >
           <a
             href="./admin.html"
             class="bg-[#8E243A] px-3 py-1 rounded text-white hidden"
