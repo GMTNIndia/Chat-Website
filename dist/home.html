@@ -5,12 +5,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>GMI Chat</title>
     <link rel="stylesheet" href="../src/output.css" />
-  </head>
+    <style>
+      @keyframes zoom {
+        0%, 100% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.2);
+        }
+      }
+      
+      .zoom-text {
+        display: inline-block;
+        animation: zoom 1s infinite;
+      }
+      
+    </style>
   <body class="bg-[#FFFFFF]">
-    <!-- Include header -->
     <div id="header"></div>
 
-    <!-- Main Content -->
     <main class="flex justify-center items-center h-screen px-4 sm:px-16 pt-10">
       <div
         class="bg-[#FFFFFF] p-8 rounded-lg shadow-lg w-full max-w-full h-4/6 border-4 flex flex-col sm:flex-row"
@@ -25,7 +38,7 @@
         </div>
         <div class="flex-grow w-full sm:w-3/5 flex flex-col justify-center">
           <h1 class="text-2xl sm:text-3xl font-bold mb-4 text-[#000000]">
-            Welcome to GMI Chat
+            Welcome to <span class="zoom-text pl-3 text-[#DA314D]">GMI Chat</span>
           </h1>
           <p class="text-sm sm:text-base line-clamp-3 text-[#909090]">
             Welcome to GMI Chat, where conversations come alive!
@@ -34,7 +47,6 @@
       </div>
     </main>
 
-    <!-- Chat Bubble -->
     <div
       id="chat-bubble"
       class="fixed bottom-4 right-4 p-4 rounded-lg shadow-lg cursor-pointer"
@@ -42,7 +54,6 @@
       <img src="./images/Vector.png" alt="Chat" />
     </div>
 
-    <!-- Popup Window -->
     <div
       id="popup"
       class="fixed inset-0 items-center justify-center bg-black bg-opacity-50 hidden border"
@@ -105,7 +116,7 @@
       </div>
     </div>
 
-    <!-- Include scripts -->
+
     <script src="./scripts.js"></script>
     <script src="./joinChat.js"></script>
   </body>
