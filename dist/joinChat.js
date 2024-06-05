@@ -99,71 +99,43 @@ document.addEventListener("DOMContentLoaded", function () {
 
   function addMessage(message, sender) {
     const messageContainer = document.createElement("div");
-    messageContainer.classList.add("mb-4"); 
-   
+    messageContainer.classList.add("mb-4");
+
     const messageContent = document.createElement("div");
     messageContent.textContent = message;
 
-    const avatarElement = document.createElement("div");
-    avatarElement.textContent = sender.charAt(0).toUpperCase();
-
-    if (sender === "system") {
+    if (sender === "System" || message.includes("Agent has joined the chat") || message.includes("Agent has left the chat")) {
       messageContainer.classList.add("flex", "justify-center", "items-center");
       messageContent.classList.add(
-          "max-w-md",
-          "bg-gray-200",
-          "py-2",
-          "px-4",
-          "rounded-lg",
-          "shadow-md",
-          "m-auto"
+        "max-w-md",
+        "bg-gray-200",
+        "py-2",
+        "px-4",
+        "rounded-lg",
+        "shadow-md",
+        "text-black",
+        "text-center"
       );
-      messageContainer.classList.add("text-green-600");
-      avatarElement.classList.add("hidden");
-    } else if (sender === user_name) {
-      messageContainer.classList.add(
-          "flex",
-          "items-center",
-          "flex-row-reverse"
-      );
-      messageContent.classList.add(
-          "max-w-md",
-          "bg-gray-300",
-          "py-1",
-          "px-4",
-          "rounded-lg",
-          "shadow-md",
-          "text-black",
-          "mr-2"
-      );
-      avatarElement.classList.add(
-          "bg-gray-300",
-          "h-8",
-          "w-8",
-          "flex",
-          "items-center",
-          "justify-center",
-          "rounded-full",
-          "text-sm",
-          "font-semibold",
-      );
-      messageContainer.appendChild(avatarElement);
       messageContainer.appendChild(messageContent);
     } else {
-      messageContainer.classList.add("flex", "items-center");
+      const avatarElement = document.createElement("div");
+      avatarElement.textContent = sender.charAt(0).toUpperCase();
       avatarElement.classList.add(
-          "bg-gray-300",
-          "h-8",
-          "w-8",
-          "flex",
-          "items-center",
-          "justify-center",
-          "rounded-full",
-          "text-sm",
-          "font-semibold",
-          "mr-2"
+        "bg-gray-300",
+        "h-8",
+        "w-8",
+        "flex",
+        "items-center",
+        "justify-center",
+        "rounded-full",
+        "text-sm",
+        "font-semibold",
+        "mr-2"
       );
-      messageContent.classList.add(
+
+      if (sender === user_name) {
+        messageContainer.classList.add("flex", "justify-end", "items-center");
+        messageContent.classList.add(
           "max-w-md",
           "bg-gray-300",
           "py-1",
@@ -171,12 +143,25 @@ document.addEventListener("DOMContentLoaded", function () {
           "rounded-lg",
           "shadow-md",
           "text-black",
-          "mr-2"
-      );
+        );
+        avatarElement.classList.add("order-last", "ml-2");
+      } else {
+        messageContainer.classList.add("flex", "items-center");
+        messageContent.classList.add(
+          "max-w-md",
+          "bg-gray-300",
+          "py-1",
+          "px-4",
+          "rounded-lg",
+          "shadow-md",
+          "text-black"
+        );
+      }
+
       messageContainer.appendChild(avatarElement);
       messageContainer.appendChild(messageContent);
     }
-    
+
     messagesDiv.appendChild(messageContainer);
     messagesDiv.scrollTop = messagesDiv.scrollHeight;
   }
