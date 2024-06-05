@@ -29,7 +29,6 @@ document.addEventListener('DOMContentLoaded', () => {
                   <p><strong>ID:</strong> ${room.room_id}</p>
                   <p><strong>Name:</strong> ${room.user_name}</p>
                   <p><strong>Status:</strong> ${room.room_status}</p>
-                  <p><strong>Agent:</strong> ${room.agent ? room.agent : 'None Yet...'}</p>
                 </div>
                 <div class="flex mt-4">
                   ${messages.length === 0 ? `
