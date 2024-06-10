@@ -30,6 +30,7 @@ class AdminandAgentManager(BaseUserManager):
     ):
         extra_fields.setdefault("is_staff", True)
         extra_fields.setdefault("is_superuser", True)
+        extra_fields.setdefault("status", "active")
         return self.create_user(
             email, first_name, last_name, role, password, **extra_fields
         )
@@ -44,8 +45,9 @@ class AdminandAgent(AbstractBaseUser, PermissionsMixin):
     first_name = models.CharField(max_length=30)
     last_name = models.CharField(max_length=30)
     role = models.CharField(max_length=5, choices=ROLE_CHOICES)
-    is_active = models.BooleanField(default=True)
+    status = models.CharField(max_length=10, default='inactive')
     is_staff = models.BooleanField(default=False)
+    is_deleted = models.BooleanField(default=False)
 
     objects = AdminandAgentManager()
 

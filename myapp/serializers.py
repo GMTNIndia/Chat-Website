@@ -5,7 +5,7 @@ from .models import AdminandAgent, ChatRoom, Message
 class AdminandAgentSerializer(serializers.ModelSerializer):
     class Meta:
         model = AdminandAgent
-        fields = ['id', 'email', 'first_name', 'last_name', 'role', 'password']
+        fields = ['id', 'email', 'first_name', 'last_name', 'role', 'password', 'status']
         extra_kwargs = {'password': {'write_only': True}}
 
     def create(self, validated_data):
@@ -17,6 +17,10 @@ class AdminandAgentSerializer(serializers.ModelSerializer):
             password=validated_data['password']
         )
         return user
+    
+    def get_status(self, obj):
+        return "active" if obj.status else "inactive"
+    
 
 
 class AgentEditSerializer(serializers.ModelSerializer):

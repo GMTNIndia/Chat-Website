@@ -5,13 +5,13 @@ from .models import AdminandAgent, ChatRoom, Message
 
 @admin.register(AdminandAgent)
 class AdminandAgentAdmin(admin.ModelAdmin):
-    list_display = ('email', 'first_name', 'last_name', 'role', 'is_active', 'is_staff')
+    list_display = ('email', 'first_name', 'last_name', 'role', 'status', 'is_staff', 'is_deleted')
     search_fields = ('email', 'first_name', 'last_name')
-    list_filter = ('role', 'is_active', 'is_staff')
+    list_filter = ('role', 'status', 'is_staff')
     fieldsets = (
         (None, {'fields': ('email', 'password')}),
         ('Personal Info', {'fields': ('first_name', 'last_name')}),
-        ('Permissions', {'fields': ('role', 'is_active', 'is_staff', 'is_superuser')}),
+        ('Permissions', {'fields': ('role', 'status', 'is_staff', 'is_superuser')}),
     )
     add_fieldsets = (
         (None, {
