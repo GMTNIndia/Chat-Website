@@ -110,16 +110,41 @@ document.addEventListener("DOMContentLoaded", function () {
 
     if (sender === "System" || message.includes("Agent has joined the chat") || message.includes("Agent has left the chat")) {
       messageContainer.classList.add("flex", "justify-center", "items-center");
-      messageContent.classList.add(
-        "max-w-md",
-        "bg-gray-200",
-        "py-2",
-        "px-4",
-        "rounded-lg",
-        "shadow-md",
-        "text-black",
-        "text-center"
-      );
+      
+      if (message.includes("Agent has joined the chat")) {
+        messageContent.classList.add(
+          "max-w-md",
+          "bg-green-400",
+          "py-2",
+          "px-4",
+          "rounded-lg",
+          "shadow-md",
+          "text-center",
+          "text-white"
+        );
+      } else if (message.includes("Agent has left the chat")) {
+        messageContent.classList.add(
+          "max-w-md",
+          "bg-red-400",
+          "py-2",
+          "px-4",
+          "rounded-lg",
+          "shadow-md",
+          "text-center",
+          "text-white"
+        );
+      } else {
+        messageContent.classList.add(
+          "max-w-md",
+          "bg-gray-200",
+          "py-2",
+          "px-4",
+          "rounded-lg",
+          "shadow-md",
+          "text-center"
+        );
+      }
+
       messageContainer.appendChild(messageContent);
     } else {
       const avatarElement = document.createElement("div");
@@ -133,7 +158,6 @@ document.addEventListener("DOMContentLoaded", function () {
         "justify-center",
         "rounded-full",
         "text-sm",
-        "font-semibold",
         "mr-2"
       );
 
@@ -145,8 +169,7 @@ document.addEventListener("DOMContentLoaded", function () {
           "py-1",
           "px-4",
           "rounded-lg",
-          "shadow-md",
-          "text-black",
+          "shadow-md"
         );
         avatarElement.classList.add("order-last", "ml-2");
       } else {
@@ -157,8 +180,7 @@ document.addEventListener("DOMContentLoaded", function () {
           "py-1",
           "px-4",
           "rounded-lg",
-          "shadow-md",
-          "text-black"
+          "shadow-md"
         );
       }
 

@@ -19,8 +19,8 @@
         display: inline-block;
         animation: zoom 1s infinite;
       }
-      
     </style>
+  </head>
   <body class="bg-[#FFFFFF]">
     <div id="header"></div>
 
@@ -107,9 +107,15 @@
           <div class="flex flex-col sm:flex-row mt-2">
             <button
               type="submit"
-              class="mt-2 sm:mt-0 bg-[#DA314D] text-[#FFFFFF] py-2 px-4 rounded-lg hover:bg-red-700 w-full sm:w-auto"
+              class="mt-2 sm:mt-0 mr-2 bg-[#DA314D] text-[#FFFFFF] py-2 px-4 rounded-lg hover:bg-red-700 w-full sm:w-auto"
             >
               Send
+            </button>
+            <button
+              id="back-btn"
+              class="mt-2 sm:mt-0 bg-[#3965d4] text-[#FFFFFF] py-2 px-4 rounded-lg hover:bg-blue-700 w-full sm:w-auto"
+            >
+              back
             </button>
           </div>
         </form>
@@ -119,5 +125,30 @@
 
     <script src="./scripts.js"></script>
     <script src="./joinChat.js"></script>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function() {
+        const backButton = document.getElementById("back-btn");
+        const chatWindow = document.getElementById("chat-window");
+        const chatForm = document.getElementById("chat-form");
+        const messageForm = document.getElementById("message-form");
+        const userInput = document.getElementById("user");
+        const messageInput = document.getElementById("message-input");
+        const messagesContainer = document.getElementById("messages");
+
+        backButton.addEventListener("click", function(event) {
+          event.preventDefault();
+          chatWindow.classList.add("hidden");
+          userInput.value = "";
+          messageInput.value = ""; 
+          messagesContainer.innerHTML = "";
+        });
+
+        chatBubble.addEventListener("click", function() {
+          chatWindow.classList.remove("hidden");
+          chatForm.reset(); 
+        });
+      });
+    </script>
   </body>
 </html>

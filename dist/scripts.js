@@ -68,7 +68,7 @@ document.addEventListener("DOMContentLoaded", function () {
       const logoutButton = document.getElementById("logout");
       if (logoutButton) {
         logoutButton.addEventListener("click", function (event) {
-          event.preventDefault(); // Prevent default link behavior
+          event.preventDefault();
           
           // Make an API call to the logout endpoint
           fetch('http://127.0.0.1:8000/api/logout/', {
@@ -83,7 +83,6 @@ document.addEventListener("DOMContentLoaded", function () {
               // Remove token and role from localStorage
               localStorage.removeItem("token");
               localStorage.removeItem("role");
-              // Redirect to home page
               window.location.href = "./home.html";
             } else {
               console.error("Failed to log out");
