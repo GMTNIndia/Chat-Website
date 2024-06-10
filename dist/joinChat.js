@@ -6,6 +6,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const messageInput = document.getElementById("message-input");
   const messagesDiv = document.getElementById("messages");
   const chatForm = document.getElementById("chat-form");
+  const typingBar = document.getElementById("typing-bar");
   let ws;
   let room_id; 
   let user_name; 
@@ -56,6 +57,9 @@ document.addEventListener("DOMContentLoaded", function () {
     ws.onmessage = function (event) {
       const data = JSON.parse(event.data);
       addMessage(data.message, data.sender);
+      if (data.message.includes("Agent has left the chat")) {
+        handleAgentLeft();
+      }
     };
 
     ws.onerror = function (error) {
@@ -164,5 +168,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
     messagesDiv.appendChild(messageContainer);
     messagesDiv.scrollTop = messagesDiv.scrollHeight;
+  }
+
+  function handleAgentLeft() {
+    typingBar.classList.add("hidden");
+    addMessage("Session closed. The agent has left the chat.", "System");
   }
 });

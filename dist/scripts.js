@@ -1,6 +1,5 @@
 document.addEventListener("DOMContentLoaded", function () {
   // Check if the user is trying to access a specific page
-
   const pathname = window.location.pathname;
   const access = localStorage.getItem("token");
 
@@ -65,20 +64,38 @@ document.addEventListener("DOMContentLoaded", function () {
         document.getElementById("agentSignIn").classList.remove("hidden");
       }
 
-      
-
       // Handle logout
       const logoutButton = document.getElementById("logout");
       if (logoutButton) {
         logoutButton.addEventListener("click", function (event) {
           event.preventDefault(); // Prevent default link behavior
-          localStorage.removeItem("token");
-          localStorage.removeItem("role");
-          window.location.href = "./home.html"; // Always redirect to sign-in on logout
+          
+          // Make an API call to the logout endpoint
+          fetch('http://127.0.0.1:8000/api/logout/', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${localStorage.getItem('token')}`,
+            }
+          })
+          .then(response => {
+            if (response.ok) {
+              // Remove token and role from localStorage
+              localStorage.removeItem("token");
+              localStorage.removeItem("role");
+              // Redirect to home page
+              window.location.href = "./home.html";
+            } else {
+              console.error("Failed to log out");
+            }
+          })
+          .catch(error => {
+            console.error("Error during logout:", error);
+          });
         });
       } else {
         console.error("Logout button not found in the DOM");
-       }
+      }
     })
     .catch((error) => {
       console.error("Error loading header:", error);

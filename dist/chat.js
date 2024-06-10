@@ -4,90 +4,90 @@ document.addEventListener("DOMContentLoaded", function () {
   const messageInput = document.getElementById("messageInput");
   const chatMessages = document.getElementById("chatMessages");
   const sendButton = document.getElementById("sendButton");
+  const leaveButton = document.getElementById("leaveButton");
   let ws;
   const messageIds = new Set();
 
   function addMessage(message, role, sender, id) {
-      const messageContainer = document.createElement("div");
-      messageContainer.dataset.messageId = id;
+    const messageContainer = document.createElement("div");
+    messageContainer.dataset.messageId = id;
 
-      const messageContent = document.createElement("div");
-      messageContent.textContent = message;
+    const messageContent = document.createElement("div");
+    messageContent.textContent = message;
 
-      const avatarElement = document.createElement("div");
-      avatarElement.textContent = sender ? sender.charAt(0).toUpperCase() : "";
+    const avatarElement = document.createElement("div");
+    avatarElement.textContent = sender ? sender.charAt(0).toUpperCase() : "";
 
-      if (role === "system") {
-        messageContainer.classList.add("flex", "justify-center", "items-center");
-        messageContent.classList.add(
-          "max-w-md",
-          "bg-gray-200",
-          "py-2",
-          "px-4",
-          "rounded-lg",
-          "shadow-md",
-          "m-auto"
-        );
-        messageContainer.classList.add("text-green-600");
-        avatarElement.classList.add("hidden");
-      } else if (role === "agent") {
-        messageContainer.classList.add("flex", "items-center", "flex-row-reverse");
-        messageContent.classList.add(
-          "max-w-md",
-          "bg-gray-300",
-          "py-1",
-          "px-4",
-          "rounded-lg",
-          "shadow-md",
-          "text-black",
-          "mr-2"
-        );
-        avatarElement.classList.add(
-          "bg-gray-300",
-          "h-8",
-          "w-8",
-          "flex",
-          "items-center",
-          "justify-center",
-          "rounded-full",
-          "text-sm",
-          "font-semibold",
-          "mr-2"
-        );
-        messageContainer.appendChild(avatarElement);
-        messageContainer.appendChild(messageContent);
-      } else {
-        messageContainer.classList.add("flex", "items-center");
-        avatarElement.classList.add(
-          "bg-gray-300",
-          "h-8",
-          "w-8",
-          "flex",
-          "items-center",
-          "justify-center",
-          "rounded-full",
-          "text-sm",
-          "font-semibold",
-          "mr-2"
-        );
-        messageContent.classList.add(
-          "max-w-md",
-          "bg-gray-300",
-          "py-1",
-          "px-4",
-          "rounded-lg",
-          "shadow-md",
-          "text-black",
-          "mr-2"
-        );
-        messageContainer.appendChild(avatarElement);
-        messageContainer.appendChild(messageContent);
-      }
+    if (role === "system") {
+      messageContainer.classList.add("flex", "justify-center", "items-center");
+      messageContent.classList.add(
+        "max-w-md",
+        "bg-gray-200",
+        "py-2",
+        "px-4",
+        "rounded-lg",
+        "shadow-md",
+        "m-auto"
+      );
+      messageContainer.classList.add("text-green-600");
+      avatarElement.classList.add("hidden");
+    } else if (role === "agent") {
+      messageContainer.classList.add("flex", "items-center", "flex-row-reverse");
+      messageContent.classList.add(
+        "max-w-md",
+        "bg-gray-300",
+        "py-1",
+        "px-4",
+        "rounded-lg",
+        "shadow-md",
+        "text-black",
+        "mr-2"
+      );
+      avatarElement.classList.add(
+        "bg-gray-300",
+        "h-8",
+        "w-8",
+        "flex",
+        "items-center",
+        "justify-center",
+        "rounded-full",
+        "text-sm",
+        "font-semibold",
+        "mr-2"
+      );
+      messageContainer.appendChild(avatarElement);
+      messageContainer.appendChild(messageContent);
+    } else {
+      messageContainer.classList.add("flex", "items-center");
+      avatarElement.classList.add(
+        "bg-gray-300",
+        "h-8",
+        "w-8",
+        "flex",
+        "items-center",
+        "justify-center",
+        "rounded-full",
+        "text-sm",
+        "font-semibold",
+        "mr-2"
+      );
+      messageContent.classList.add(
+        "max-w-md",
+        "bg-gray-300",
+        "py-1",
+        "px-4",
+        "rounded-lg",
+        "shadow-md",
+        "text-black",
+        "mr-2"
+      );
+      messageContainer.appendChild(avatarElement);
+      messageContainer.appendChild(messageContent);
+    }
 
-      messageContainer.style.marginBottom = "20px"; 
-      chatMessages.appendChild(messageContainer);
-      chatMessages.scrollTop = chatMessages.scrollHeight;
-
+    messageContainer.style.marginBottom = "20px";
+    chatMessages.appendChild(messageContainer);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
   }
 
   function storeMessage(messageData) {
@@ -110,7 +110,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
       try {
         ws.send(JSON.stringify(messageData));
-        messageIds.add(messageId); 
+        messageIds.add(messageId);
       } catch (error) {
         console.error("WebSocket send error:", error);
       }
@@ -130,22 +130,72 @@ document.addEventListener("DOMContentLoaded", function () {
 
     ws.addEventListener("open", () => {
       console.log("WebSocket connected");
+      updateRoomStatus("active");
+      sendSystemMessage("Agent has joined the chat");
     });
 
     ws.addEventListener("message", (event) => {
       const data = JSON.parse(event.data);
-      if (!messageIds.has(data.id)) {
-        addMessage(data.message, data.role, data.sender, data.id);
+      if (data.role === "system" && data.message.includes("Agent left the chat")) {
+        // Agent left the chat, update room status
+        updateRoomStatus("closed");
+      } else {
+        if (!messageIds.has(data.id)) {
+          addMessage(data.message, data.role, data.sender, data.id);
+        }
       }
     });
+
     ws.addEventListener("error", (error) => {
       console.error("WebSocket error:", error);
     });
 
     ws.addEventListener("close", () => {
       console.error("WebSocket closed unexpectedly. Reconnecting...");
+      updateRoomStatus("closed");
       setTimeout(setupWebSocket, 1000);
     });
+  }
+
+  function sendSystemMessage(message) {
+    const messageId = generateMessageId();
+    const systemMessage = {
+      message: message,
+      role: "system",
+      sender: null,
+      id: messageId,
+    };
+    try {
+      ws.send(JSON.stringify(systemMessage));
+    } catch (error) {
+      console.error("WebSocket send error:", error);
+    }
+    if (message.includes("Agent left the chat")) {
+      updateRoomStatus("closed");
+    }
+    addMessage(message, "system", null, messageId);
+  }
+
+  function updateRoomStatus(status) {
+    fetch(`http://127.0.0.1:8000/api/rooms/${room_Id}/status/`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${localStorage.getItem("token")}`,
+      },
+      body: JSON.stringify({ status: status }),
+    })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          document.getElementById("roomStatus").textContent = status.charAt(0).toUpperCase() + status.slice(1);
+        } else {
+          console.error("Error updating room status:", data.error);
+        }
+      })
+      .catch(error => {
+        console.error("Error updating room status:", error);
+      });
   }
 
   function fetchRoomData() {
@@ -162,20 +212,10 @@ document.addEventListener("DOMContentLoaded", function () {
             <p><strong>Room_Id:</strong> <span>${data.room_id}</span></p>
             <p><strong>Name:</strong> <span>${data.user_name}</span></p>
             <p><strong>Started:</strong> <span>${data.started}</span></p>
-            <p><strong>Status:</strong>
-              <select id="status">
-                <option value="waiting">Waiting</option>
-                <option value="active">Active</option>
-                <option value="closed">Closed</option>
-              </select>
-            </p>
+            <p><strong>Status:</strong> <span id="roomStatus">${data.room_status}</span></p>
             <p><strong>Page:</strong> <a href="${data.page_url}">${data.page_url}</a></p>
           </div>
         `;
-
-        document
-          .getElementById("status")
-          .addEventListener("change", handleStatusChange);
       })
       .catch((error) => {
         console.error("Error fetching room data:", error);
@@ -185,37 +225,6 @@ document.addEventListener("DOMContentLoaded", function () {
           </div>
         `;
       });
-  }
-
-  function handleStatusChange() {
-    const status = document.getElementById("status").value;
-    const agentName = "Agent";
-    let statusMessage;
-
-    if (status === "active") {
-        statusMessage = {
-            message: "Agent has joined the chat",
-            role: "system",
-            id: generateMessageId(),
-        };
-        ws.send(JSON.stringify(statusMessage));
-        document.querySelector("#roomInfo p:nth-child(5) span").textContent = agentName;
-        removeAvatar();
-    } else if (status === "closed") {
-        statusMessage = {
-            message: "Agent has left the chat",
-            role: "system",
-            id: generateMessageId(),
-        };
-        ws.send(JSON.stringify(statusMessage));
-        document.querySelector("#roomInfo p:nth-child(5) span").textContent = agentName;
-        removeAvatar();
-    }
-  }
-
-  function removeAvatar() {
-    const avatars = document.querySelectorAll(".avatar");
-    avatars.forEach(avatar => avatar.remove());
   }
 
   function fetchMessages() {
@@ -242,6 +251,14 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
   sendButton.addEventListener("click", sendMessage);
+
+  leaveButton.addEventListener("click", function() {
+    sendSystemMessage("Agent has left the chat");
+    updateRoomStatus("closed");
+    setTimeout(function() {
+      window.location.href = './admin.html';
+    }, 1000); // Adjust the delay as needed
+  });
 
   fetchRoomData();
   fetchMessages();
