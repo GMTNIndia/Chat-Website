@@ -1,8 +1,9 @@
+
 document.addEventListener('DOMContentLoaded', () => {
   const roomSection = document.getElementById('roomSection');
   const roomsContainer = document.getElementById('roomsContainer');
-
   const token = localStorage.getItem("token");
+  const agentId = localStorage.getItem("agent_id"); // Assuming agent_id is stored in localStorage
 
   const requestOptions = {
     headers: {
@@ -14,7 +15,6 @@ document.addEventListener('DOMContentLoaded', () => {
     .then(response => response.json())
     .then(data => {
       data.forEach(room => {
-        // Fetch messages for the room
         fetch(`http://127.0.0.1:8000/api/messages/${room.room_id}/`, requestOptions)
           .then(response => response.json())
           .then(messages => {
@@ -29,7 +29,7 @@ document.addEventListener('DOMContentLoaded', () => {
                   <p><strong>ID:</strong> ${room.room_id}</p>
                   <p><strong>Name:</strong> ${room.user_name}</p>
                   <p><strong>Status:</strong> ${room.room_status}</p>
-                </div>
+                </div>    
                 <div class="flex mt-4">
                   ${messages.length === 0 ? `
                     <button class="join-btn bg-[#285D46] text-white px-4 py-2 rounded-md mr-2" data-room-id="${room.room_id}" data-room-status="${room.room_status}">Join</button>
@@ -47,19 +47,23 @@ document.addEventListener('DOMContentLoaded', () => {
               button.addEventListener('click', (event) => {
                 const room_Id = event.target.getAttribute('data-room-id');
                 const roomStatus = event.target.getAttribute('data-room-status');
-                const agentName = 'Agent';
+                const agentName = localStorage.getItem("first_name");
 
-                fetch(`http://127.0.0.1:8000/api/rooms/${room_Id}/`, {
+                fetch(`http://127.0.0.1:8000/api/rooms/${room_Id}/join/`, {
                   method: 'POST',
                   headers: {
                     'Authorization': `Bearer ${token}`,
                     'Content-Type': 'application/json',
                   },
-                  body: JSON.stringify({ agent: agentName }),
+                  body: JSON.stringify({ agent_id: agentId }),
                 })
                 .then(response => response.json())
-                .then(() => {
-                  window.location.href = `./chat.html?room_id=${room_Id}`;
+                .then(data => {
+                  if (data.is_engaged === 'engaged') {
+                    event.target.textContent = 'Engaged';
+                    event.target.disabled = true;
+                    window.location.href = `./chat.html?room_id=${room_Id}`;
+                  }
                 })
                 .catch(error => {
                   console.error('Error joining room:', error);

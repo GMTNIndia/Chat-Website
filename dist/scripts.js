@@ -83,6 +83,8 @@ document.addEventListener("DOMContentLoaded", function () {
               // Remove token and role from localStorage
               localStorage.removeItem("token");
               localStorage.removeItem("role");
+              localStorage.removeItem("first_name");
+              localStorage.removeItem("agent_id");
               window.location.href = "./home.html";
             } else {
               console.error("Failed to log out");

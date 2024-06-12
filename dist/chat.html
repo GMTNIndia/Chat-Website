@@ -52,9 +52,10 @@
             Show active agents
           </button>
           <button
+           id="leaveButton"
             class="bg-[#143dd0] text-white px-6 py-2 rounded-lg font-semibold text-sm sm:text-base"
           >
-            <a href="./admin.html" id="leaveButton">Leave</a>
+            Leave
           </button>
         </div>
       </div>
@@ -116,6 +117,7 @@
           );
           statusDot.style.backgroundColor =
             agent.status === "active" ? "#10B981" : "#EF4444";
+            agent.is_engaged === 'engaged' ? "orange" : "#10B981"
           listItem.appendChild(statusDot);
 
           const agentLink = document.createElement("a");

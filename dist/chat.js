@@ -32,7 +32,11 @@ document.addEventListener("DOMContentLoaded", function () {
       messageContainer.classList.add("text-green-600");
       avatarElement.classList.add("hidden");
     } else if (role === "agent") {
-      messageContainer.classList.add("flex", "items-center", "flex-row-reverse");
+      messageContainer.classList.add(
+        "flex",
+        "items-center",
+        "flex-row-reverse"
+      );
       messageContent.classList.add(
         "max-w-md",
         "bg-gray-300",
@@ -104,7 +108,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const message = messageInput.value.trim();
     if (message) {
       const userRole = localStorage.getItem("role") || "user";
-      const sender = "Agent";
+      const sender = localStorage.getItem("first_name");
       const messageId = generateMessageId();
       const messageData = { message, role: userRole, sender, id: messageId };
 
@@ -136,7 +140,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
     ws.addEventListener("message", (event) => {
       const data = JSON.parse(event.data);
-      if (data.role === "system" && data.message.includes("Agent left the chat")) {
+      if (
+        data.role === "system" &&
+        data.message.includes("Agent left the chat")
+      ) {
         // Agent left the chat, update room status
         updateRoomStatus("closed");
       } else {
@@ -181,19 +188,20 @@ document.addEventListener("DOMContentLoaded", function () {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": `Bearer ${localStorage.getItem("token")}`,
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
       },
       body: JSON.stringify({ status: status }),
     })
-      .then(response => response.json())
-      .then(data => {
+      .then((response) => response.json())
+      .then((data) => {
         if (data.success) {
-          document.getElementById("roomStatus").textContent = status.charAt(0).toUpperCase() + status.slice(1);
+          document.getElementById("roomStatus").textContent =
+            status.charAt(0).toUpperCase() + status.slice(1);
         } else {
           console.error("Error updating room status:", data.error);
         }
       })
-      .catch(error => {
+      .catch((error) => {
         console.error("Error updating room status:", error);
       });
   }
@@ -237,7 +245,12 @@ document.addEventListener("DOMContentLoaded", function () {
       })
       .then((messages) => {
         messages.forEach((messageData) => {
-          addMessage(messageData.message, messageData.role, messageData.sender, messageData.id);
+          addMessage(
+            messageData.message,
+            messageData.role,
+            messageData.sender,
+            messageData.id
+          );
         });
       })
       .catch((error) => console.error("Error fetching messages:", error));
@@ -252,13 +265,48 @@ document.addEventListener("DOMContentLoaded", function () {
 
   sendButton.addEventListener("click", sendMessage);
 
-  leaveButton.addEventListener("click", function() {
+  document.getElementById('leaveButton').addEventListener('click', async function(event) {
     sendSystemMessage("Agent has left the chat");
     updateRoomStatus("closed");
-    setTimeout(function() {
-      window.location.href = './admin.html';
-    }, 1000); // Adjust the delay as needed
-  });
+
+    const agentId = localStorage.getItem("agent_id");
+
+    if (!agentId) {
+        console.error('Agent ID or Room ID is missing');
+        return;
+    }
+
+    try {
+        const response = await fetch(`http://127.0.0.1:8000/api/rooms/${room_Id}/leave/`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ agent_id: agentId })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            console.error('Error:', data.error || 'Unknown error');
+            return;
+        }
+
+        console.log('Response data:', data);
+
+        if (data.is_engaged === 'not engaged') {
+            event.target.textContent = 'Not Engaged';
+            event.target.disabled = true;
+            window.location.href = 'admin.html';
+        } else {
+            console.log('Agent is still engaged or some other condition met');
+        }
+    } catch (error) {
+        console.error('Error:', error);
+    }
+});
+
+
 
   fetchRoomData();
   fetchMessages();

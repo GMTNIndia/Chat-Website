@@ -26,6 +26,7 @@ document.addEventListener("DOMContentLoaded", function () {
               <td class="px-6 ${
                 agent.status === "active" ? "text-green-500" : "text-red-500"
               }">${agent.status}</td>
+              <td class="px-6">${agent.is_engaged}</td>
               <td class="px-6 flex flex-col md:flex-row md:items-center">
                 <button class="editAgentBtn mb-2 md:mb-0 md:mr-1.5 flex p-1.5 transition-all duration-300" data-id="${agent.id}">
                   <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-500 hover:fill-blue-200" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">

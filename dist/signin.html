@@ -96,6 +96,9 @@
             // Store the token in local storage
             localStorage.setItem("token", data.access);
             localStorage.setItem("role", data.role);
+            localStorage.setItem("first_name", data.first_name);
+            localStorage.setItem("agent_id", data.agent_id);
+
             
             // Redirect to the home page
             window.location.href = "admin.html";

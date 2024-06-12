@@ -33,7 +33,7 @@
         >
           <img
             src='./images/chatIMG.png' alt="Chat Illustration"
-            class="w-full h-auto max-h-64 mx-auto"
+            class="w-50 h-auto max-h-84 mx-auto"
           />
         </div>
         <div class="flex-grow w-full sm:w-3/5 flex flex-col justify-center">
@@ -111,13 +111,6 @@
             >
               Send
             </button>
-            <button
-              id="back-btn"
-              class="mt-2 sm:mt-0 bg-[#3965d4] text-[#FFFFFF] py-2 px-4 rounded-lg hover:bg-blue-700 w-full sm:w-auto"
-            >
-              back
-            </button>
-          </div>
         </form>
       </div>
     </div>
@@ -126,29 +119,5 @@
     <script src="./scripts.js"></script>
     <script src="./joinChat.js"></script>
 
-    <script>
-      document.addEventListener("DOMContentLoaded", function() {
-        const backButton = document.getElementById("back-btn");
-        const chatWindow = document.getElementById("chat-window");
-        const chatForm = document.getElementById("chat-form");
-        const messageForm = document.getElementById("message-form");
-        const userInput = document.getElementById("user");
-        const messageInput = document.getElementById("message-input");
-        const messagesContainer = document.getElementById("messages");
-
-        backButton.addEventListener("click", function(event) {
-          event.preventDefault();
-          chatWindow.classList.add("hidden");
-          userInput.value = "";
-          messageInput.value = ""; 
-          messagesContainer.innerHTML = "";
-        });
-
-        chatBubble.addEventListener("click", function() {
-          chatWindow.classList.remove("hidden");
-          chatForm.reset(); 
-        });
-      });
-    </script>
   </body>
 </html>
