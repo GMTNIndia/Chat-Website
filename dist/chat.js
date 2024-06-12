@@ -14,85 +14,82 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const messageContent = document.createElement("div");
     messageContent.textContent = message;
+    messageContent.style.whiteSpace = "normal"; // Ensure text wraps
+    messageContent.style.wordBreak = "break-word"; // Handle long words
 
     const avatarElement = document.createElement("div");
     avatarElement.textContent = sender ? sender.charAt(0).toUpperCase() : "";
 
+    const avatarClasses = [
+        "bg-gray-300",
+        "h-8",
+        "w-8",
+        "flex",
+        "items-center",
+        "justify-center",
+        "rounded-full",
+        "text-sm",
+        "font-semibold",
+        "mr-2"
+    ];
+
     if (role === "system") {
-      messageContainer.classList.add("flex", "justify-center", "items-center");
-      messageContent.classList.add(
-        "max-w-md",
-        "bg-gray-200",
-        "py-2",
-        "px-4",
-        "rounded-lg",
-        "shadow-md",
-        "m-auto"
-      );
-      messageContainer.classList.add("text-green-600");
-      avatarElement.classList.add("hidden");
+        messageContainer.classList.add("flex", "justify-center", "items-center");
+        messageContent.classList.add(
+            "max-w-md",
+            "bg-gray-200",
+            "py-2",
+            "px-4",
+            "rounded-lg",
+            "shadow-md",
+            "m-auto"
+        );
+        messageContainer.classList.add("text-green-600");
+        avatarElement.classList.add("hidden");
     } else if (role === "agent") {
-      messageContainer.classList.add(
-        "flex",
-        "items-center",
-        "flex-row-reverse"
-      );
-      messageContent.classList.add(
-        "max-w-md",
-        "bg-gray-300",
-        "py-1",
-        "px-4",
-        "rounded-lg",
-        "shadow-md",
-        "text-black",
-        "mr-2"
-      );
-      avatarElement.classList.add(
-        "bg-gray-300",
-        "h-8",
-        "w-8",
-        "flex",
-        "items-center",
-        "justify-center",
-        "rounded-full",
-        "text-sm",
-        "font-semibold",
-        "mr-2"
-      );
-      messageContainer.appendChild(avatarElement);
-      messageContainer.appendChild(messageContent);
+        messageContainer.classList.add(
+            "flex",
+            "items-start",
+            "lg:items-center",
+            "flex-row-reverse"
+        );
+        messageContent.classList.add(
+            "max-w-56",
+            "bg-[#DA314D]",
+            "py-1",
+            "px-4",
+            "rounded-lg",
+            "shadow-md",
+            "text-white",
+            "mr-2"
+        );
+        avatarElement.classList.add(...avatarClasses);
+        messageContainer.appendChild(avatarElement);
+        messageContainer.appendChild(messageContent);
     } else {
-      messageContainer.classList.add("flex", "items-center");
-      avatarElement.classList.add(
-        "bg-gray-300",
-        "h-8",
-        "w-8",
-        "flex",
-        "items-center",
-        "justify-center",
-        "rounded-full",
-        "text-sm",
-        "font-semibold",
-        "mr-2"
-      );
-      messageContent.classList.add(
-        "max-w-md",
-        "bg-gray-300",
-        "py-1",
-        "px-4",
-        "rounded-lg",
-        "shadow-md",
-        "text-black",
-        "mr-2"
-      );
-      messageContainer.appendChild(avatarElement);
-      messageContainer.appendChild(messageContent);
+        messageContainer.classList.add("flex", "items-start", "lg:items-center");
+        avatarElement.classList.add(...avatarClasses);
+        messageContent.classList.add(
+            "max-w-56",
+            "bg-gray-300",
+            "py-1",
+            "px-4",
+            "rounded-lg",
+            "shadow-md",
+            "text-black",
+            "mr-2"
+        );
+        messageContainer.appendChild(avatarElement);
+        messageContainer.appendChild(messageContent);
     }
 
     messageContainer.style.marginBottom = "20px";
     chatMessages.appendChild(messageContainer);
     chatMessages.scrollTop = chatMessages.scrollHeight;
-  }
+}
+
+
+
 
   function storeMessage(messageData) {
     if (messageData.role !== "system") {

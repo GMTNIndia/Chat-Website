@@ -5,6 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>GMI Chat</title>
     <link rel="stylesheet" href="../src/output.css" />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+      rel="stylesheet"
+    />
     <style>
       @keyframes zoom {
         0%, 100% {
@@ -18,6 +22,9 @@
       .zoom-text {
         display: inline-block;
         animation: zoom 1s infinite;
+      }
+      #message-input::-webkit-scrollbar {
+        display: none;
       }
     </style>
   </head>
@@ -84,36 +91,41 @@
 
     <!-- Chat Window -->
     <div
-      id="chat-window"
-      class="fixed inset-0 items-center justify-center bg-black bg-opacity-50 hidden rounded"
+    id="chat-window"
+    class="fixed inset-0 items-center justify-center bg-black bg-opacity-50 rounded hidden"
+  >
+    <div
+      class="fixed bottom-4 right-4 bg-[#FFFFFF] p-8 rounded-lg shadow-lg max-w-md w-4/5 flex flex-col h-3/4"
     >
       <div
-        class="fixed bottom-4 right-4 bg-[#FFFFFF] p-8 rounded-lg shadow-lg max-w-md w-4/5 flex flex-col h-3/4"
-      >
-        <div
-          id="messages"
-          class="flex-grow mb-4 overflow-y-auto p-2 bg-[#F3F5F7] rounded-md text-[#2D2D2D] font-semibold flex flex-col"
-        ></div>
-        <form id="message-form" class="flex flex-col">
-          <div class="flex flex-col sm:flex-row">
-            <input
-              type="text"
-              id="message-input"
-              class="flex-grow p-2 bg-[#F3F5F7] text-[#000000] rounded-md font-semibold focus:outline-none"
-              placeholder="Type your message..."
-              required
-            />
-          </div>
-          <div class="flex flex-col sm:flex-row mt-2">
-            <button
-              type="submit"
-              class="mt-2 sm:mt-0 mr-2 bg-[#DA314D] text-[#FFFFFF] py-2 px-4 rounded-lg hover:bg-red-700 w-full sm:w-auto"
-            >
-              Send
-            </button>
-        </form>
-      </div>
+        id="messages"
+        class="flex-grow mb-4 overflow-y-auto p-2 bg-[#F3F5F7] rounded-md text-[#2D2D2D] font-semibold flex flex-col"
+      ></div>
+      <form id="message-form" class="flex flex-col">
+        <div class="flex flex-col sm:flex-row items-center relative">
+          <button class="absolute left-4 top-1/2 transform -translate-y-1/2">
+            <i class="fas fa-paperclip text-black"></i>
+          </button>
+
+          <textarea id="message-input" placeholder="Type Your Message...." rows="4" 
+           class="bg-white w-full px-4 py-3 pl-10 pr-12 border rounded-lg focus:outline-none font-semibold resize-none"
+           style="height: 50px; overflow: auto; scrollbar-width: none; -ms-overflow-style: none;"></textarea>
+
+          <button class="absolute right-4 top-1/2 transform -translate-y-1/2">
+            <i class="fas fa-camera text-black"></i>
+          </button>
+        </div>
+        <div class="flex flex-col sm:flex-row mt-2">
+          <button
+            type="submit"
+            class="mt-2 sm:mt-0 mr-2 bg-[#DA314D] text-[#FFFFFF] py-2 px-4 rounded-lg hover:bg-red-700 w-full sm:w-auto"
+          >
+            Send
+          </button>
+        </div>
+      </form>
     </div>
+  </div>
 
 
     <script src="./scripts.js"></script>

@@ -100,97 +100,101 @@ document.addEventListener("DOMContentLoaded", function () {
       })
       .catch((error) => console.error("Error storing message:", error));
   }
-
   function addMessage(message, sender) {
     const messageContainer = document.createElement("div");
     messageContainer.classList.add("mb-4");
-
+    
     const messageContent = document.createElement("div");
     messageContent.textContent = message;
+    messageContent.style.wordWrap = "break-word"; // Set word-wrap property
 
     if (sender === "System" || message.includes("Agent has joined the chat") || message.includes("Agent has left the chat")) {
-      messageContainer.classList.add("flex", "justify-center", "items-center");
-      
-      if (message.includes("Agent has joined the chat")) {
-        messageContent.classList.add(
-          "max-w-md",
-          "bg-green-400",
-          "py-2",
-          "px-4",
-          "rounded-lg",
-          "shadow-md",
-          "text-center",
-          "text-white"
-        );
-      } else if (message.includes("Agent has left the chat")) {
-        messageContent.classList.add(
-          "max-w-md",
-          "bg-red-400",
-          "py-2",
-          "px-4",
-          "rounded-lg",
-          "shadow-md",
-          "text-center",
-          "text-white"
-        );
-      } else {
-        messageContent.classList.add(
-          "max-w-md",
-          "bg-gray-200",
-          "py-2",
-          "px-4",
-          "rounded-lg",
-          "shadow-md",
-          "text-center"
-        );
-      }
+        messageContainer.classList.add("flex", "justify-center", "items-center", "w-full");
 
-      messageContainer.appendChild(messageContent);
+        if (message.includes("Agent has joined the chat")) {
+            messageContent.classList.add(
+                "max-w-md",
+                "bg-white",
+                "py-1",
+                "px-2",
+                "rounded-lg",
+                "shadow-md",
+                "text-center",
+                "text-green-600"
+            );
+        } else if (message.includes("Agent has left the chat")) {
+            messageContent.classList.add(
+                "max-w-md",
+                "bg-white",
+                "py-1",
+                "px-2",
+                "rounded-lg",
+                "shadow-md",
+                "text-center",
+                "text-[#DA314D]"
+            );
+        } else {
+            messageContent.classList.add(
+                "max-w-md",
+                "bg-white",
+                "py-2",
+                "px-4",
+                "rounded-lg",
+                "shadow-md",
+                "text-center"
+            );
+        }
+
+        messageContainer.appendChild(messageContent);
     } else {
-      const avatarElement = document.createElement("div");
-      avatarElement.textContent = sender.charAt(0).toUpperCase();
-      avatarElement.classList.add(
-        "bg-gray-300",
-        "h-8",
-        "w-8",
-        "flex",
-        "items-center",
-        "justify-center",
-        "rounded-full",
-        "text-sm",
-        "mr-2"
-      );
-
-      if (sender === user_name) {
-        messageContainer.classList.add("flex", "justify-end", "items-center");
-        messageContent.classList.add(
-          "max-w-md",
-          "bg-gray-300",
-          "py-1",
-          "px-4",
-          "rounded-lg",
-          "shadow-md"
+        const avatarElement = document.createElement("div");
+        avatarElement.textContent = sender.charAt(0).toUpperCase();
+        avatarElement.classList.add(
+            "bg-gray-300",
+            "h-8",
+            "w-8",
+            "flex",
+            "items-center",
+            "justify-center",
+            "rounded-full",
+            "text-sm",
+            "mr-2"
         );
-        avatarElement.classList.add("order-last", "ml-2");
-      } else {
-        messageContainer.classList.add("flex", "items-center");
-        messageContent.classList.add(
-          "max-w-md",
-          "bg-gray-300",
-          "py-1",
-          "px-4",
-          "rounded-lg",
-          "shadow-md"
-        );
-      }
 
-      messageContainer.appendChild(avatarElement);
-      messageContainer.appendChild(messageContent);
+        if (sender === user_name) {
+            messageContainer.classList.add("flex", "justify-end", "items-center", "w-full");
+            messageContent.classList.add(
+                "max-w-56",
+                "bg-[#DA314D]",
+                "py-1",
+                "px-4",
+                "rounded-lg",
+                "shadow-md",
+                "text-white"
+            );
+            avatarElement.classList.add("order-last", "ml-2");
+        } else {
+            messageContainer.classList.add("flex", "items-center", "w-full");
+            messageContent.classList.add(
+                "max-w-56", // Limit message content width
+                "bg-gray-300",
+                "py-1",
+                "px-4",
+                "rounded-lg",
+                "shadow-md"
+            );
+        }
+
+        messageContainer.appendChild(avatarElement);
+        messageContainer.appendChild(messageContent);
     }
 
     messagesDiv.appendChild(messageContainer);
     messagesDiv.scrollTop = messagesDiv.scrollHeight;
-  }
+}
+
+
+
 
   function handleAgentLeft() {
     typingBar.classList.add("hidden");

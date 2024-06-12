@@ -4,17 +4,23 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Chat Page</title>
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
       #chatMessages {
         height: 300px;
         overflow-y: auto;
       }
+      #messageInput::-webkit-scrollbar {
+        display: none;
+      }
     </style>
   </head>
 
-  <body
-    class="bg-[#FFFFFF] flex flex-col items-center justify-center h-screen px-5"
-  >
+  <body class="bg-white flex flex-col items-center justify-center h-screen px-5">
     <div id="header"></div>
     <br />
     <div class="w-full flex flex-col justify-between h-full max-h-screen">
@@ -24,37 +30,48 @@
 
       <!-- Chat container -->
       <div class="p-2">
-        <div id="chatMessages" class="rounded-xl flex-grow p-4 bg-[#F3F5F7]">
+        <div id="chatMessages" class="rounded-xl flex-grow p-6 bg-gray-100">
           <!-- Chat messages will be appended here -->
         </div>
       </div>
 
-      <div
-        class="py-4 border-t-4 flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 sm:space-x-2"
-      >
-        <input
-          type="text"
-          id="messageInput"
-          placeholder="Type Your Message...."
-          class="bg-[#F3F5F7] flex-grow px-4 py-2 border rounded-lg focus:outline-none font-semibold"
-        />
+      <div class="py-4 border-t-4 flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 sm:space-x-2 relative">
+        <!-- Input Field Container -->
+        <div class="relative flex-grow">
+          <button class="absolute top-1/2 left-4 transform -translate-y-1/2">
+            <i class="fas fa-paperclip text-black"></i>
+          </button>
+          <button class="absolute top-1/2 right-4 transform -translate-y-1/2">
+            <i class="fas fa-camera text-black"></i>
+          </button>
+          <textarea
+            id="messageInput"
+            placeholder="Type Your Message...."
+            rows="4"
+            class="bg-white w-full px-4 py-3 pl-10 pr-12 border border-gray-300 rounded-lg focus:outline-none font-semibold resize-none"
+            style="height: 50px; overflow-y: scroll; scrollbar-width: none; -ms-overflow-style: none;"
+          ></textarea>
+        </div>
+
+        <!-- Buttons Container -->
         <div class="flex space-x-2 mt-2 sm:mt-0">
           <button
             id="sendButton"
-            class="bg-[#DA314D] text-white px-6 py-2 rounded-lg font-semibold text-sm sm:text-base"
+            class="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-lg font-semibold text-sm sm:text-base"
           >
             Send
           </button>
           <button
             id="activeAgents"
-            class="bg-green-600 text-white px-4 py-2 rounded-lg font-semibold text-sm sm:text-base"
+            class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg font-semibold text-sm sm:text-base"
           >
             Show active agents
           </button>
           <button
-            class="bg-[#143dd0] text-white px-6 py-2 rounded-lg font-semibold text-sm sm:text-base"
+            id="leaveButton"
+            class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-semibold text-sm sm:text-base"
           >
-            <a href="./admin.html" id="leaveButton">Leave</a>
+            Leave
           </button>
         </div>
       </div>
@@ -114,7 +131,7 @@
             "rounded-full",
             "align-middle"
           );
-          if (agent.status === "active" && agent.role === "agent"){
+          if (agent.status === "active" && agent.role === "agent") {
             statusDot.style.backgroundColor =
               agent.is_engaged === "engaged" ? "#FFA500" : "#10B981";
             listItem.appendChild(statusDot);
@@ -126,7 +143,8 @@
             listItem.appendChild(agentLink);
 
             agentList.appendChild(listItem);
-        }});
+          }
+        });
 
         bubbleWindow.appendChild(agentList);
 
