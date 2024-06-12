@@ -52,10 +52,9 @@
             Show active agents
           </button>
           <button
-           id="leaveButton"
             class="bg-[#143dd0] text-white px-6 py-2 rounded-lg font-semibold text-sm sm:text-base"
           >
-            Leave
+            <a href="./admin.html" id="leaveButton">Leave</a>
           </button>
         </div>
       </div>
@@ -115,19 +114,19 @@
             "rounded-full",
             "align-middle"
           );
-          statusDot.style.backgroundColor =
-            agent.status === "active" ? "#10B981" : "#EF4444";
-            agent.is_engaged === 'engaged' ? "orange" : "#10B981"
-          listItem.appendChild(statusDot);
+          if (agent.status === "active" && agent.role === "agent"){
+            statusDot.style.backgroundColor =
+              agent.is_engaged === "engaged" ? "#FFA500" : "#10B981";
+            listItem.appendChild(statusDot);
 
-          const agentLink = document.createElement("a");
-          agentLink.textContent = `${agent.first_name}`;
-          agentLink.href = `./agent.html?id=${agent.id}`; // Assuming the URL structure for agent details page
-          agentLink.classList.add("text-gray-700", "font-medium", "ml-2");
-          listItem.appendChild(agentLink);
+            const agentLink = document.createElement("h1");
+            agentLink.textContent = `${agent.first_name}`;
+            agentLink.href = `./agent.html?id=${agent.id}`; // Assuming the URL structure for agent details page
+            agentLink.classList.add("text-gray-700", "font-medium", "ml-2");
+            listItem.appendChild(agentLink);
 
-          agentList.appendChild(listItem);
-        });
+            agentList.appendChild(listItem);
+        }});
 
         bubbleWindow.appendChild(agentList);
 
